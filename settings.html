@@ -1,0 +1,3332 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixelAim - WebPanel</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg0: #0a0a0c;
+      --bg1: #111114;
+      --bg2: #18181d;
+      --bg3: #1f1f26;
+      --border: rgba(255, 255, 255, .07);
+      --border2: rgba(255, 255, 255, .14);
+      --text: #eaeaf4;
+      --muted: #8a8aa8;
+      --muted2: #55556e;
+      --accent: #7c5cfc;
+      --ar: 124;
+      --ag: 92;
+      --ab: 252;
+      --accent-dim: rgba(124, 92, 252, .15);
+      --accent-glow: 0 0 18px rgba(124, 92, 252, .4);
+      --green: #34d399;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --sb-col: 64px;
+      --sb-exp: 218px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg0);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ══ SIDEBAR ══ */
+    .sidebar {
+      width: var(--sb-exp);
+      min-width: var(--sb-exp);
+      background: var(--bg1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width .22s cubic-bezier(.4, 0, .2, 1), min-width .22s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+      z-index: 50;
+    }
+
+    .sidebar.col {
+      width: var(--sb-col);
+      min-width: var(--sb-col);
+    }
+
+    .sb-toggle {
+      position: absolute;
+      top: 50%;
+      right: -12px;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 60;
+      color: var(--muted);
+      transition: color .15s;
+    }
+
+    .sb-toggle:hover {
+      color: var(--text);
+    }
+
+    .sb-toggle svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .sidebar.col .sb-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    .sb-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 14px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .sidebar.col .sb-brand {
+      padding: 18px 0 16px;
+      justify-content: center;
+    }
+
+    .sb-logo {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(var(--ar), var(--ag), var(--ab), .3);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .sb-txt {
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity .22s, width .22s;
+    }
+
+    .sb-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 1.5px;
+    }
+
+    .sb-ver {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .sidebar.col .sb-txt {
+      opacity: 0;
+      width: 0;
+      pointer-events: none;
+    }
+
+    .sb-nav {
+      flex: 1;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .sb-sec {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted2);
+      padding: 12px 12px 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity .22s;
+      text-transform: uppercase;
+    }
+
+    .sidebar.col .sb-sec {
+      opacity: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all .15s;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      stroke: currentColor;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .nav-lbl {
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity .22s, max-width .22s;
+      max-width: 160px;
+    }
+
+    .sidebar.col .nav-lbl {
+      opacity: 0;
+      max-width: 0;
+    }
+
+    .nav-item:hover {
+      color: var(--text);
+      background: var(--bg2);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background: var(--accent-dim);
+      border-color: rgba(var(--ar), var(--ag), var(--ab), .25);
+    }
+
+    .nav-tip {
+      position: absolute;
+      left: calc(100%+14px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .15s;
+      z-index: 200;
+    }
+
+    .sidebar.col .nav-item:hover .nav-tip {
+      opacity: 1;
+    }
+
+    .sb-div {
+      width: calc(100% - 20px);
+      height: 1px;
+      background: var(--border);
+      margin: 5px 10px;
+    }
+
+    .sb-footer {
+      padding: 13px 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sidebar.col .sb-footer {
+      padding: 13px 0;
+      justify-content: center;
+    }
+
+    .sb-av {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      background: var(--bg3);
+      border-radius: 7px;
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .sb-user {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: opacity .22s;
+    }
+
+    .u-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .u-badge {
+      font-size: 11px;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .u-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 5px var(--green);
+    }
+
+    .sidebar.col .sb-user {
+      opacity: 0;
+      width: 0;
+      pointer-events: none;
+    }
+
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--accent);
+      border-radius: 8px;
+      padding: 7px 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all .15s;
+      user-select: none;
+    }
+
+    .lang-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .lang-btn svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    /* lang dropdown */
+    .lang-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .lang-menu {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0, 0, 0, .8);
+      min-width: 280px;
+      display: none;
+      z-index: 20000;
+      animation: modalIn .3s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .user-id-modal,
+    .cfg-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg1);
+      border: 1px solid var(--border2);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, .9);
+      min-width: 380px;
+      display: none;
+      z-index: 20001;
+      animation: modalIn .3s cubic-bezier(.4, 0, .2, 1);
+      text-align: center;
+    }
+
+    .user-id-modal h2,
+    .cfg-modal h2 {
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .user-id-modal input,
+    .cfg-modal textarea {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color .2s;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+    }
+
+    .cfg-modal textarea {
+      height: 120px;
+      resize: none;
+    }
+
+    .user-id-modal input:focus,
+    .cfg-modal textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      display: none;
+      z-index: 19999;
+      animation: fadeIn .2s ease;
+    }
+
+    .modal-overlay.open {
+      display: block;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -45%) scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .lang-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      transition: background .12s;
+    }
+
+    .lang-opt:hover {
+      background: var(--bg3);
+    }
+
+    .lang-opt.selected {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    .lang-flag {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .lang-opt span:nth-child(2) {
+      flex: 1;
+    }
+
+    .lang-code {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* 3-col enemy grid */
+    .ec-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .ec-grid-3 .ec-dot {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 12px;
+    }
+
+    /* ══ MAIN ══ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg1);
+      flex-shrink: 0;
+    }
+
+    .bc {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .bc .cur {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .topbar-r {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .dot.g {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    /* ══ CONTENT ══ */
+    .content-area {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 26px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--bg3) transparent;
+    }
+
+    .scroll-area::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: var(--bg3);
+      border-radius: 2px;
+    }
+
+    /* ══ RIGHT PANEL ══ */
+    .right-panel {
+      width: 218px;
+      min-width: 218px;
+      border-left: 1px solid var(--border);
+      background: var(--bg1);
+      padding: 18px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .rp-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted2);
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    /* ══ SECTION ══ */
+    .section {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      overflow: hidden;
+      margin-bottom: 13px;
+    }
+
+    .section-head {
+      padding: 13px 17px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--bg2);
+    }
+
+    .section-head svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--accent);
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .sh-title {
+      font-size: 15px;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .section-body {
+      padding: 18px;
+    }
+
+    /* ══ TOGGLE ══ */
+    .trow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .trow:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .trow:first-child {
+      padding-top: 0;
+    }
+
+    .trow-info {
+      flex: 1;
+    }
+
+    .trow-name {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .trow-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .tog {
+      position: relative;
+      width: 38px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .tog input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .ttr {
+      position: absolute;
+      inset: 0;
+      background: var(--bg3);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: .2s;
+      border: 1px solid var(--border2);
+    }
+
+    .ttr::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      left: 3px;
+      top: 3px;
+      background: var(--muted2);
+      transition: .2s;
+    }
+
+    .tog input:checked+.ttr {
+      background: rgba(var(--ar), var(--ag), var(--ab), .22);
+      border-color: var(--accent);
+    }
+
+    .tog input:checked+.ttr::before {
+      background: var(--accent);
+      transform: translateX(16px);
+      box-shadow: var(--accent-glow);
+    }
+
+    /* disabled */
+    .trow.disabled {
+      opacity: .4;
+      pointer-events: none;
+    }
+
+    .maint-tag {
+      font-size: 10px;
+      font-family: 'DM Mono', monospace;
+      background: rgba(251, 191, 36, .1);
+      border: 1px solid rgba(251, 191, 36, .3);
+      color: var(--yellow);
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+
+    /* ══ SLIDER ══ */
+    .sl-group {
+      margin-bottom: 17px;
+    }
+
+    .sl-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .sl-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 9px;
+    }
+
+    .sl-lbl {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .sl-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      padding: 3px 10px;
+      border-radius: 5px;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--bg3);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: var(--accent-glow);
+      cursor: pointer;
+      border: 2px solid var(--bg0);
+      transition: transform .15s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    /* ══ SELECT ══ */
+    .fg {
+      margin-bottom: 13px;
+    }
+
+    .fg:last-child {
+      margin-bottom: 0;
+    }
+
+    .fg-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 7px;
+      display: block;
+      text-transform: uppercase;
+    }
+
+    select {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 10px 12px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8aa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: border-color .15s;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    /* ══ KEYBIND ══ */
+    .kb-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .kb-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 13px;
+      transition: border-color .15s;
+    }
+
+    .kb-row:hover {
+      border-color: var(--border2);
+    }
+
+    .kb-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .kb-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .kb-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .kb-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .kb-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 6px 11px;
+      cursor: pointer;
+      min-width: 68px;
+      text-align: center;
+      transition: all .15s;
+      user-select: none;
+    }
+
+    .kb-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .kb-btn.listening {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+      animation: blink .6s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .35
+      }
+    }
+
+    .mode-pill {
+      display: flex;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .mp-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 5px 9px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all .15s;
+      background: transparent;
+      border: none;
+      user-select: none;
+    }
+
+    .mp-btn.on {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    /* ══ COLOR WHEEL ══ */
+    .cw-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .cw-ring {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      cursor: crosshair;
+      flex-shrink: 0;
+    }
+
+    #cwCanvas {
+      border-radius: 50%;
+      display: block;
+      width: 180px;
+      height: 180px;
+    }
+
+    .cw-cursor {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+    }
+
+    .cw-bottom {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cw-preview-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cw-swatch {
+      width: 52px;
+      height: 52px;
+      border-radius: 11px;
+      border: 2px solid var(--border2);
+      flex-shrink: 0;
+      transition: background .1s;
+    }
+
+    .cw-hex {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      padding: 10px 12px;
+      outline: none;
+      text-transform: uppercase;
+    }
+
+    .cw-hex:focus {
+      border-color: var(--accent);
+    }
+
+    .cw-brightness {
+      width: 100%;
+    }
+
+    .cw-br-lbl {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 7px;
+      display: block;
+    }
+
+    /* ══ ENEMY COLORS ══ */
+    .ec-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .ec-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ec-dot {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 9px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .15s;
+      position: relative;
+    }
+
+    .ec-dot:hover {
+      transform: scale(1.08);
+    }
+
+    .ec-dot.active {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, .2);
+    }
+
+    .ec-dot.active::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .7);
+    }
+
+    .ec-lbl {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ══ RP WIDGETS ══ */
+    .rp-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px;
+    }
+
+    .rp-key {
+      background: var(--bg3);
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 10px;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 9px;
+      box-shadow: var(--accent-glow);
+      cursor: pointer;
+      transition: all .15s;
+      user-select: none;
+    }
+
+    .rp-key:hover {
+      background: var(--accent-dim);
+    }
+
+    .rp-key.listening {
+      animation: blink .6s infinite;
+    }
+
+    .rp-key-desc {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .fov-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px;
+    }
+
+    .fov-cw {
+      width: 100%;
+      aspect-ratio: 1;
+      margin-top: 8px;
+    }
+
+    #fovCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px;
+    }
+
+    .srow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .srow:last-child {
+      margin-bottom: 0;
+    }
+
+    .slbl {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .sval {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .sval.gr {
+      color: var(--green);
+    }
+
+    .sval.ac {
+      color: var(--accent);
+    }
+
+    /* ══ PAGE ══ */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ══ SAVE ══ */
+    .save-bar {
+      display: flex;
+      gap: 9px;
+      justify-content: flex-end;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+
+    .btn {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all .15s;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--muted);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 15px 0;
+    }
+
+    .hint {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(var(--ar), var(--ag), var(--ab), .07);
+      border: 1px solid rgba(var(--ar), var(--ag), var(--ab), .2);
+      border-radius: 7px;
+      padding: 10px 13px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hint svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--accent);
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    /* ══ BOTTOM-CENTER TOAST ══ */
+    #toast-box {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      background: var(--bg1);
+      border: 1px solid var(--border2);
+      border-top: 3px solid var(--accent);
+      border-radius: 9px;
+      padding: 11px 20px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .6);
+      animation: tIn .2s ease;
+      white-space: nowrap;
+      min-width: 240px;
+      text-align: center;
+    }
+
+    .toast-item .tt {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: .5px;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+
+    .toast-item .tb {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toast-item.out {
+      animation: tOut .22s ease forwards;
+    }
+
+    @keyframes tIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes tOut {
+      from {
+        opacity: 1;
+        transform: translateY(0)
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(14px)
+      }
+    }
+
+    /* GT-CODE Modal Styles Unified Above */
+
+    .code-box {
+      background: var(--bg2);
+      border: 2px dashed var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .code-box:hover {
+      background: rgba(var(--ar), var(--ag), var(--ab), 0.1);
+    }
+
+    .code-txt {
+      font-family: 'DM Mono', monospace;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: var(--accent);
+      text-shadow: 0 0 15px rgba(var(--ar), var(--ag), var(--ab), 0.4);
+    }
+
+    .input-group-pa {
+      display: flex;
+      align-items: center;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 0 16px;
+      margin-bottom: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .input-group-pa:focus-within {
+      border-color: var(--accent);
+    }
+
+
+    .pa-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 16px 0;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      outline: none;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="toast-box"></div>
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-toggle" onclick="toggleSB()">
+      <svg viewBox="0 0 24 24" stroke-width="2.2">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </div>
+    <div class="sb-brand" onclick="toggleSB()">
+      <div class="sb-logo">PA</div>
+      <div class="sb-txt">
+        <div class="sb-name">PIXEL AIM</div>
+        <div class="sb-ver">v3.1 — Pro</div>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-sec" data-i18n="modules">Modüller</div>
+      <div class="nav-item active" onclick="goPage('aimbot',this)">
+        <svg viewBox="0 0 24 24" stroke-width="1.6">
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="3" />
+          <line x1="12" y1="2" x2="12" y2="6" />
+          <line x1="12" y1="18" x2="12" y2="22" />
+          <line x1="2" y1="12" x2="6" y2="12" />
+          <line x1="18" y1="12" x2="22" y2="12" />
+        </svg>
+        <span class="nav-lbl" data-i18n="aimbot">Aimbot</span>
+        <span class="nav-tip" data-i18n="aimbot">Aimbot</span>
+      </div>
+      <div class="nav-item" onclick="goPage('triggerbot',this)">
+        <svg viewBox="0 0 24 24" stroke-width="1.6">
+          <path
+            d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />
+        </svg>
+        <span class="nav-lbl" data-i18n="triggerbot">Triggerbot</span>
+        <span class="nav-tip" data-i18n="triggerbot">Triggerbot</span>
+      </div>
+      <div class="nav-item" onclick="goPage('magnet',this)">
+        <svg viewBox="0 0 24 24" stroke-width="1.8">
+          <path d="M7 2v10a5 5 0 0 0 10 0V2h-3v10a2 2 0 0 1-4 0V2H7z" />
+          <path d="M15 2h2v3h-2zm-8 0h2v3H7z" />
+        </svg>
+        <span class="nav-lbl" data-i18n="magnet_trigger">Magnet</span>
+        <span class="nav-tip" data-i18n="magnet_trigger">Magnet</span>
+      </div>
+      <div class="nav-item" onclick="goPage('game',this)">
+        <svg viewBox="0 0 24 24" stroke-width="1.6">
+          <rect x="2" y="6" width="20" height="12" rx="2" />
+          <path d="M12 12h.01M8 10v4M6 12h4M16 11h2M16 13h2" />
+        </svg>
+        <span class="nav-lbl" data-i18n="game_settings">Oyun Ayarları</span>
+        <span class="nav-tip" data-i18n="game_settings">Oyun Ayarları</span>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec" data-i18n="system">Sistem</div>
+      <div class="nav-item" onclick="goPage('settings',this)">
+        <svg viewBox="0 0 24 24" stroke-width="1.6">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+        <span class="nav-lbl" data-i18n="settings">Ayarlar</span>
+        <span class="nav-tip" data-i18n="settings">Ayarlar</span>
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-av">👤</div>
+      <div class="sb-user">
+        <div class="u-name" id="u-display-name">GT User</div>
+        <div class="u-badge" data-i18n="active_license">Aktif Lisans</div>
+      </div>
+      <div class="lang-wrap" id="lang-wrap">
+        <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)" title="Language / Dil">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10" />
+            <path
+              d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span id="lang-label">TR</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="modal-overlay" id="modal-overlay" onclick="closeAllModals()"></div>
+
+  <div class="lang-menu" id="lang-menu">
+    <div class="lang-opt" onclick="selectLang('tr')"><span class="lang-flag">🇹🇷</span><span>Türkçe</span><span
+        class="lang-code">TR</span></div>
+    <div class="lang-opt" onclick="selectLang('en')"><span class="lang-flag">🇬🇧</span><span>English</span><span
+        class="lang-code">EN</span></div>
+    <div class="lang-opt" onclick="selectLang('de')"><span class="lang-flag">🇩🇪</span><span>Deutsch</span><span
+        class="lang-code">DE</span></div>
+    <div class="lang-opt" onclick="selectLang('fr')"><span class="lang-flag">🇫🇷</span><span>Français</span><span
+        class="lang-code">FR</span></div>
+    <div class="lang-opt" onclick="selectLang('es')"><span class="lang-flag">🇪🇸</span><span>Español</span><span
+        class="lang-code">ES</span></div>
+    <div class="lang-opt" onclick="selectLang('it')"><span class="lang-flag">🇮🇹</span><span>Italiano</span><span
+        class="lang-code">IT</span></div>
+    <div class="lang-opt" onclick="selectLang('pt')"><span class="lang-flag">🇵🇹</span><span>Português</span><span
+        class="lang-code">PT</span></div>
+    <div class="lang-opt" onclick="selectLang('br')"><span class="lang-flag">🇧🇷</span><span>Brasileiro</span><span
+        class="lang-code">BR</span></div>
+    <div class="lang-opt" onclick="selectLang('ru')"><span class="lang-flag">🇷🇺</span><span>Русский</span><span
+        class="lang-code">RU</span></div>
+    <div class="lang-opt" onclick="selectLang('ja')"><span class="lang-flag">🇯🇵</span><span>日本語</span><span
+        class="lang-code">JA</span></div>
+    <div class="lang-opt" onclick="selectLang('zh')"><span class="lang-flag">🇨🇳</span><span>简体中文</span><span
+        class="lang-code">ZH</span></div>
+    <div class="lang-opt" onclick="selectLang('ko')"><span class="lang-flag">🇰🇷</span><span>한국어</span><span
+        class="lang-code">KO</span></div>
+    <div class="lang-opt" onclick="selectLang('ar')"><span class="lang-flag">🇸🇦</span><span>العربية</span><span
+        class="lang-code">AR</span></div>
+    <div class="lang-opt" onclick="selectLang('vi')"><span class="lang-flag">🇻🇳</span><span>Tiếng Việt</span><span
+        class="lang-code">VI</span></div>
+    <div class="lang-opt" onclick="selectLang('pl')"><span class="lang-flag">🇵🇱</span><span>Polski</span><span
+        class="lang-code">PL</span></div>
+  </div>
+
+  <div class="user-id-modal" id="user-id-modal">
+    <h2 data-i18n="user_id_prompt">USER ID?</h2>
+    <input type="text" id="user-id-input" placeholder="Enter your ID..." maxlength="20">
+    <button class="btn btn-primary" style="width:100%" onclick="submitUserId()">Tamam</button>
+  </div>
+
+  <div class="cfg-modal" id="cfg-modal">
+    <!-- Load View Only -->
+    <div id="cfg-view-load" style="display:none;">
+      <h2 style="margin-bottom:24px;">Config Yükle</h2>
+      <div class="input-group-pa">
+        <input type="text" class="pa-input" id="pa-code-input" placeholder="PA-XXXX" maxlength="7"
+          style="text-align:center; padding-left:0;">
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:12px;" onclick="applyConfigCode()">Uygula</button>
+      <button class="btn btn-ghost" style="width:100%" onclick="closeAllModals()">Kapat</button>
+    </div>
+  </div>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <div class="main">
+    <div class="topbar">
+      <div class="bc">
+        <span style="color:var(--muted)">GhostTrigger</span>
+        <span style="color:var(--muted2);margin:0 2px">›</span>
+        <span class="cur" id="bc-page">Aimbot</span>
+      </div>
+      <div class="topbar-r">
+        <div class="chip">
+          <div class="dot g"></div><span data-i18n="running">ÇALIŞIYOR</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- ══ AIMBOT ══ -->
+      <div class="scroll-area page active" id="page-aimbot">
+
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="3" />
+              <line x1="12" y1="2" x2="12" y2="6" />
+              <line x1="12" y1="18" x2="12" y2="22" />
+              <line x1="2" y1="12" x2="6" y2="12" />
+              <line x1="18" y1="12" x2="22" y2="12" />
+            </svg>
+            <span class="sh-title" data-i18n="aimbot">Aimbot</span>
+          </div>
+          <div class="section-body">
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="enable_aimbot">Aimbot'u Etkinleştir</div>
+                <div class="trow-sub" data-i18n="enable_aimbot_sub">Otomatik nişan almayı etkinleştir</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="aim-en"
+                  onchange="onTog('Aimbot','Enable',this.checked);beepAim(this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name">Recoil Kontrol (RCS)</div>
+                <div class="trow-sub">Ateş ederken geri tepmeyi azaltır</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="rcs-en" onchange="onTog('Aimbot','RCS',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl">RCS Gücü (Offset)</span>
+                <span class="sl-num" id="v-rcs-len">80px</span>
+              </div>
+              <input type="range" min="1" max="1000" value="80" id="rcs-len-input"
+                oninput="sv('v-rcs-len',this.value+'px');updateFill(this);showToast('RCS Power','→ '+this.value+'px')">
+            </div>
+
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl">RCS Hızı (Hız)</span>
+                <span class="sl-num" id="v-rcs-sp">0.40</span>
+              </div>
+              <input type="range" min="1" max="1000" value="40" id="rcs-sp-input"
+                oninput="sv('v-rcs-sp',(this.value/100).toFixed(2));updateFill(this);showToast('RCS Speed','→ '+(this.value/100).toFixed(2))">
+            </div>
+          </div>
+        </div>
+
+        <!-- FOV slider only -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h3m14 0h3M12 2v3m0 14v3" />
+            </svg>
+            <span class="sh-title" data-i18n="aimbot_fov">Aimbot FOV</span>
+          </div>
+          <div class="section-body">
+            <div class="sl-group">
+              <div class="sl-top"><span class="sl-lbl" data-i18n="fov_radius">FOV Yarıçapı</span><span class="sl-num"
+                  id="v-fov">100px</span></div>
+              <input type="range" min="10" max="300" value="100"
+                oninput="sv('v-fov',this.value+'px');sv('stat-fov',this.value+'px');updateFill(this);drawFov(+this.value);showToast('FOV','FOV → '+this.value+'px')">
+            </div>
+          </div>
+        </div>
+
+        <!-- Smooth & Speed -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <path d="M3 3v18h18" />
+              <path d="M7 16c.5-2 1.5-3 3-3s2 2 4 2 3-1 3-3" />
+            </svg>
+            <span class="sh-title" data-i18n="smooth_speed">Smooth & Hız</span>
+          </div>
+          <div class="section-body">
+            <div class="sl-group">
+              <div class="sl-top"><span class="sl-lbl" data-i18n="smooth">Smooth</span><span class="sl-num"
+                  id="v-sm">1.00</span></div>
+              <input type="range" min="100" max="3000" value="100"
+                oninput="sv('v-sm',(this.value/100).toFixed(2));sv('stat-sm',(this.value/100).toFixed(2));updateFill(this);showToast('Smooth','→ '+(this.value/100).toFixed(2))">
+            </div>
+            <div class="sl-group">
+              <div class="sl-top"><span class="sl-lbl" data-i18n="speed">Hız</span><span class="sl-num"
+                  id="v-sp">1</span></div>
+              <input type="range" min="1" max="100" value="1"
+                oninput="sv('v-sp',this.value);updateFill(this);showToast('Speed','→ '+this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Settings -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            <span class="sh-title" data-i18n="target_settings">Hedef Ayarları</span>
+          </div>
+          <div class="section-body">
+            <div class="fg">
+              <label class="fg-lbl" data-i18n="target_bone">Hedef Bölge</label>
+              <select id="bone-select"
+                onchange="showToast('Target Bone','→ '+this.value); if(typeof updateBackend === 'function') updateBackend();">
+                <option>Head</option>
+                <option>Neck</option>
+                <option>Body</option>
+                <option>Legs</option>
+              </select>
+            </div>
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="team_lock">Takım Kilidini Önle</div>
+              </div>
+              <label class="tog"><input type="checkbox" checked onchange="onTog('Target','Team Lock',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keybinds — FOV up/down REMOVED, latency REMOVED -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <rect x="2" y="6" width="20" height="13" rx="2" />
+              <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" />
+            </svg>
+            <span class="sh-title" data-i18n="keybindings">Tuş Atamaları</span>
+          </div>
+          <div class="section-body">
+            <div class="hint"><svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg><span data-i18n="kb_hint">Butona tıkla → klavye veya fare tuşu bas. HOLD=basılı tut, TRIG=tek
+                basış.</span></div>
+            <div class="kb-list">
+              <div class="kb-row">
+                <div class="kb-info">
+                  <div class="kb-name" data-i18n="enable_aimbot">Aimbot Etkinleştir</div>
+                </div>
+                <div class="kb-right">
+                  <div class="mode-pill"><button class="mp-btn on"
+                      onclick="setMode(this,'Aim Enable','HOLD')">HOLD</button><button class="mp-btn"
+                      onclick="setMode(this,'Aim Enable','TRIG')">TRIG</button></div>
+                  <div class="kb-btn" id="ak-aim" onclick="listenKey(this,'Aim Enable')">MOUSE4</div>
+                </div>
+              </div>
+              <div class="kb-row">
+                <div class="kb-info">
+                  <div class="kb-name" data-i18n="aim_toggle">Aimbot Toggle</div>
+                </div>
+                <div class="kb-right">
+                  <div class="mode-pill"><button class="mp-btn on"
+                      onclick="setMode(this,'Aim Toggle','HOLD')">HOLD</button><button class="mp-btn"
+                      onclick="setMode(this,'Aim Toggle','TRIG')">TRIG</button></div>
+                  <div class="kb-btn" onclick="listenKey(this,'Aim Toggle')">F1</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
+          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
+        </div>
+      </div>
+
+      <!-- ══ TRIGGERBOT ══ -->
+      <div class="scroll-area page" id="page-triggerbot">
+
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <path
+                d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />
+            </svg>
+            <span class="sh-title" data-i18n="triggerbot">Triggerbot</span>
+          </div>
+          <div class="section-body">
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="enable_tb">Triggerbot'u Etkinleştir</div>
+                <div class="trow-sub" data-i18n="enable_tb_sub">Hedef üzerindeyken otomatik ateş</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="trig-en"
+                  onchange="onTog('Triggerbot','Enable',this.checked); updateBackend();">
+                <div class="ttr"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span class="sh-title" data-i18n="trigger_delay">Tetik Gecikmesi</span>
+          </div>
+          <div class="section-body">
+            <div class="sl-group">
+              <div class="sl-top"><span class="sl-lbl" data-i18n="delay">Gecikme</span><span class="sl-num" id="v-td">0
+                  ms</span></div>
+              <input type="range" min="0" max="500" value="0"
+                oninput="sv('v-td',this.value+' ms');updateFill(this);showToast('Trigger Delay','→ '+this.value+' ms')">
+            </div>
+          </div>
+        </div>
+
+        <!-- Triggerbot Keybinds — latency REMOVED -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <rect x="2" y="6" width="20" height="13" rx="2" />
+              <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" />
+            </svg>
+            <span class="sh-title" data-i18n="keybindings">Tuş Atamaları</span>
+          </div>
+          <div class="section-body">
+            <div class="hint"><svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg><span data-i18n="kb_hint">Butona tıkla → klavye veya fare tuşu bas.</span></div>
+            <div class="kb-list">
+              <div class="kb-row">
+                <div class="kb-info">
+                  <div class="kb-name" data-i18n="enable_tb">TB Etkinleştir</div>
+                </div>
+                <div class="kb-right">
+                  <div class="mode-pill"><button class="mp-btn on"
+                      onclick="setMode(this,'TB En','HOLD')">HOLD</button><button class="mp-btn"
+                      onclick="setMode(this,'TB En','TRIG')">TRIG</button></div>
+                  <div class="kb-btn" id="ak-trig" onclick="listenKey(this,'TB Enable')">MOUSE5</div>
+                </div>
+              </div>
+              <div class="kb-row">
+                <div class="kb-info">
+                  <div class="kb-name" data-i18n="tb_toggle">TB Toggle</div>
+                </div>
+                <div class="kb-right">
+                  <div class="mode-pill"><button class="mp-btn on"
+                      onclick="setMode(this,'TB Tog','HOLD')">HOLD</button><button class="mp-btn"
+                      onclick="setMode(this,'TB Tog','TRIG')">TRIG</button></div>
+                  <div class="kb-btn" onclick="listenKey(this,'TB Toggle')">F2</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
+          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
+        </div>
+      </div>
+
+      <!-- ══ MAGNET ══ -->
+      <div class="scroll-area page" id="page-magnet">
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <path d="M7 2v10a5 5 0 0 0 10 0V2h-3v10a2 2 0 0 1-4 0V2H7z" />
+            </svg>
+            <span class="sh-title" data-i18n="magnet_trigger">Magnet Triggerbot</span>
+          </div>
+          <div class="section-body">
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="enable_magnet">Magnet'ı Etkinleştir</div>
+                <div class="trow-sub" data-i18n="enable_magnet_sub">Aim ve Trigger'ı aynı tuşta birleştirir</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="magnet-en" onchange="onTog('Magnet','Enable',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+            <div class="hint">
+              <svg viewBox="0 0 24 24" stroke-width="1.6">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span data-i18n="magnet_hint">Bu mod aktifken seçili tuşa bastığınızda hem nişan alır hem ateş
+                eder.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span class="sh-title" data-i18n="keybindings">Tuş Atamaları</span>
+          </div>
+          <div class="section-body">
+            <div class="kb-list">
+              <div class="kb-row">
+                <div class="kb-info">
+                  <div class="kb-name" data-i18n="magnet_key">Magnet Tuşu</div>
+                </div>
+                <div class="kb-right">
+                  <div class="kb-btn" id="ak-magnet" onclick="listenKey(this,'Magnet')">MOUSE4</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
+          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
+        </div>
+      </div>
+
+      <!-- ══ GAME SETTINGS ══ -->
+      <div class="scroll-area page" id="page-game">
+
+        <!-- Enemy Color -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+            <span class="sh-title" data-i18n="enemy_color">Düşman Rengi</span>
+          </div>
+          <div class="section-body">
+            <div class="ec-grid-3" id="ec-enemy">
+              <div class="ec-item">
+                <div class="ec-dot active" style="background:#a855f7" onclick="setEC('enemy',this,'#a855f7')"></div>
+                <div class="ec-lbl" data-i18n="c_purple">Mor</div>
+              </div>
+              <div class="ec-item">
+                <div class="ec-dot" style="background:#fbbf24" onclick="setEC('enemy',this,'#fbbf24')"></div>
+                <div class="ec-lbl" data-i18n="c_yellow">Sarı</div>
+              </div>
+              <div class="ec-item">
+                <div class="ec-dot" style="background:#ef4444" onclick="setEC('enemy',this,'#ef4444')"></div>
+                <div class="ec-lbl" data-i18n="c_red">Kırmızı</div>
+              </div>
+            </div>
+            <div
+              style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:12px 15px;">
+              <div id="ec-preview"
+                style="width:30px;height:30px;border-radius:7px;background:#a855f7;flex-shrink:0;border:2px solid rgba(255,255,255,.12);">
+              </div>
+              <div>
+                <div style="font-size:15px;font-weight:600;" data-i18n="selected_color">Seçili Renk</div>
+                <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);margin-top:2px;"
+                  id="ec-hex">#A855F7</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
+          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS ══ -->
+      <div class="scroll-area page" id="page-settings">
+
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span class="sh-title" data-i18n="general_settings">Genel Ayarlar</span>
+          </div>
+          <div class="section-body">
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="hide_cmd">Hide CMD</div>
+                <div class="trow-sub" data-i18n="hide_cmd_sub">Konsol penceresini gizle</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="cmd-tog"
+                  onchange="onTog('General','Hide CMD',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="beep_sound">Ses Bildirimi (Bip)</div>
+                <div class="trow-sub" data-i18n="beep_sound_sub">Aimbot açılıp kapanınca bip sesi</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="beep-tog" checked
+                  onchange="onTog('General','Beep',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="startup">Başlangıçta Aç</div>
+              </div>
+              <label class="tog"><input type="checkbox" checked onchange="onTog('General','Startup',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLOR WHEEL — only for menu color -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+            </svg>
+            <span class="sh-title" data-i18n="menu_color">Menü Rengi</span>
+          </div>
+          <div class="section-body">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+              <!-- Wheel -->
+              <div style="position:relative;width:180px;height:180px;cursor:crosshair;" id="cw-ring">
+                <canvas id="cwCanvas" width="180" height="180" style="border-radius:50%;display:block;"></canvas>
+                <div id="cw-cursor"
+                  style="position:absolute;width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 8px rgba(0,0,0,.9);pointer-events:none;transform:translate(-50%,-50%);top:50%;left:50%;">
+                </div>
+              </div>
+              <!-- Brightness -->
+              <div style="width:100%;">
+                <div style="font-size:13px;color:var(--muted);margin-bottom:8px;" data-i18n="brightness">Parlaklık
+                </div>
+                <input type="range" id="cw-bright" min="0" max="100" value="85"
+                  oninput="cwBright=this.value/100;updateFill(this);applyWheelColor()" style="width:100%;">
+              </div>
+              <!-- Preview + hex -->
+              <div style="display:flex;align-items:center;gap:12px;width:100%;">
+                <div id="cw-swatch"
+                  style="width:52px;height:52px;border-radius:11px;border:2px solid var(--border2);background:var(--accent);flex-shrink:0;">
+                </div>
+                <input id="cw-hex" class="cw-hex" type="text" value="#7C5CFC" maxlength="7"
+                  style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:15px;padding:10px 13px;outline:none;text-transform:uppercase;"
+                  oninput="onHexInput(this.value)" onfocus="this.style.borderColor='var(--accent)'"
+                  onblur="this.style.borderColor='var(--border2)'">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Config -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            <span class="sh-title" data-i18n="config_mgmt">Config Yönetimi</span>
+          </div>
+          <div class="section-body" style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary" style="flex:1" onclick="openCfgShare()">Config Paylaş</button>
+              <button class="btn btn-ghost" style="flex:1;border-color:var(--accent);color:var(--accent);"
+                onclick="openCfgImport()" data-i18n="load_config">Config Yükle</button>
+            </div>
+            <!-- In-line Code Display -->
+            <div id="inline-pa-container" style="display:none;margin-top:5px;">
+              <div class="code-box" style="margin-bottom:0;padding:12px;cursor:pointer;" onclick="copyConfigCode()">
+                <div class="code-txt" id="display-pa-code" style="font-size:22px;letter-spacing:2px;">PA-XXXX</div>
+                <div id="copy-status-pa"
+                  style="font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;">Kopyalamak için
+                  tıkla</div>
+              </div>
+            </div>
+            <button class="btn btn-ghost"
+              style="width:100%;border-color:var(--accent);color:var(--accent);margin-top:2px;"
+              onclick="toggleScreenCaptureLog()" id="btn-screen-log">Screen Capture log</button>
+          </div>
+        </div>
+
+        <!-- General Keybinds -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <rect x="2" y="6" width="20" height="13" rx="2" />
+              <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" />
+            </svg>
+            <span class="sh-title" data-i18n="general_kb">Genel Tuş Atamaları</span>
+          </div>
+          <div class="section-body">
+            <div class="hint"><svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg><span data-i18n="kb_hint">Butona tıkla → klavye veya fare tuşu bas.</span></div>
+            <div class="kb-list">
+              <div class="kb-row">
+                <div class="kb-info">
+                  <div class="kb-name" data-i18n="panel_toggle">Paneli Göster/Gizle</div>
+                </div>
+                <div class="kb-right">
+                  <div class="mode-pill"><button class="mp-btn on"
+                      onclick="setMode(this,'Panel','HOLD')">HOLD</button><button class="mp-btn"
+                      onclick="setMode(this,'Panel','TRIG')">TRIG</button></div>
+                  <div class="kb-btn" onclick="listenKey(this,'Panel Toggle')">INS</div>
+                </div>
+              </div>
+              <div class="kb-row">
+                <div class="kb-info">
+                  <div class="kb-name" data-i18n="panic_key">Panic Key</div>
+                  <div class="kb-desc" data-i18n="panic_sub">Her şeyi devre dışı bırak</div>
+                </div>
+                <div class="kb-right">
+                  <div class="mode-pill"><button class="mp-btn on"
+                      onclick="setMode(this,'Panic','HOLD')">HOLD</button><button class="mp-btn"
+                      onclick="setMode(this,'Panic','TRIG')">TRIG</button></div>
+                  <div class="kb-btn" onclick="listenKey(this,'Panic')">END</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
+          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
+        </div>
+      </div>
+
+      <!-- ══ RIGHT PANEL (aimbot only) ══ -->
+      <div class="right-panel" id="right-panel">
+        <div>
+          <div class="rp-lbl" data-i18n="target_bone">Hedef Bölge</div>
+          <select id="bone-select-rp"
+            onchange="document.getElementById('bone-select').value=this.value; showToast('Target Bone','→ '+this.value); if(typeof updateBackend === 'function') updateBackend();">
+            <option>Head</option>
+            <option>Neck</option>
+            <option>Body</option>
+            <option>Legs</option>
+          </select>
+        </div>
+        <div>
+          <div class="rp-lbl" data-i18n="resolution">Çözünürlük</div>
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;margin-bottom:8px;">
+            <span style="font-size:14px;font-weight:500;" data-i18n="auto_detect">Otomatik Algıla</span>
+            <label class="tog"><input type="checkbox" checked onchange="onTog('Res','Auto',this.checked)">
+              <div class="ttr"></div>
+            </label>
+          </div>
+          <select>
+            <option selected>Auto: 1920×1080</option>
+            <option>2560×1440</option>
+            <option>3840×2160</option>
+          </select>
+        </div>
+        <div>
+          <div class="rp-lbl" data-i18n="fov_preview">FOV Önizleme</div>
+          <div class="fov-wrap">
+            <div class="fov-cw"><canvas id="fovCanvas" width="160" height="160"></canvas></div>
+          </div>
+        </div>
+        <div>
+          <div class="rp-lbl" data-i18n="status">Durum</div>
+          <div class="stat-card">
+            <div class="srow"><span class="slbl">FOV</span><span class="sval ac" id="stat-fov">100px</span></div>
+            <div class="srow"><span class="slbl">Smooth</span><span class="sval" id="stat-sm">1.00</span></div>
+            <div class="srow"><span class="slbl" data-i18n="aimbot">Aimbot</span><span class="sval"
+                id="stat-aim">Aktif</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* ══ INITIALIZATION & USER ID ══ */
+    let curPageId = 'aimbot';
+    let userId = localStorage.getItem('ghost_uid');
+    if (!userId) {
+      userId = prompt("USER ID?");
+      if (userId) {
+        localStorage.setItem('ghost_uid', userId);
+      } else {
+        userId = "PIXEL AIM User";
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const nameEl = document.getElementById('u-display-name');
+      if (nameEl) nameEl.textContent = userId;
+    });
+
+    /* ══ I18N ══ */
+    const LANGS = ['tr', 'en', 'de', 'fr', 'es', 'it', 'pt', 'br', 'ru', 'ja', 'zh', 'ko', 'ar', 'vi', 'pl'];
+    const LANG_LABELS = {
+      tr: 'TR', en: 'EN', de: 'DE', fr: 'FR', es: 'ES', it: 'IT', pt: 'PT', br: 'BR', ru: 'RU', ja: 'JA',
+      zh: 'ZH', ko: 'KO', ar: 'AR', vi: 'VI', pl: 'PL'
+    };
+    let curLang = localStorage.getItem('ghost_lang') || 'tr';
+
+    const i18n = {
+      tr: {
+        modules: 'Modüller', system: 'Sistem', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Oyun Ayarları', settings: 'Ayarlar', active_license: 'Aktif Lisans',
+        running: 'ÇALIŞIYOR', enable_aimbot: "Aimbot'u Etkinleştir", enable_aimbot_sub: 'Otomatik nişan almayı etkinleştir',
+        aimbot_fov: 'Aimbot FOV', fov_radius: 'FOV Yarıçapı', smooth_speed: 'Smooth & Hız', smooth: 'Smooth', speed: 'Hız',
+        target_settings: 'Hedef Ayarları', target_bone: 'Hedef Bölge', prediction: 'Tahmin (Prediction)',
+        prediction_sub: 'Geçici süreyle devre dışı', maintenance: '⚙ Bakımda', team_lock: 'Takım Kilidini Önle',
+        keybindings: 'Tuş Atamaları', kb_hint: 'Butona tıkla → klavye veya fare tuşu bas. HOLD=basılı tut, TRIG=tek basış.',
+        enable_tb: "Triggerbot'u Etkinleştir", enable_tb_sub: 'Hedef üzerindeyken otomatik ateş',
+        trigger_delay: 'Tetik Gecikmesi', delay: 'Gecikme', random_offset: 'Rastgele Offset ±',
+        options: 'Seçenekler', mode: 'Mod', auto: 'Sürekli (Auto)', hold_mode: 'Basılı Tut (Hold)', toggle: 'Toggle',
+        head_only: 'Sadece Kafa', fire_random: 'Ateş Randomizasyonu', aim_toggle: 'Aimbot Toggle', tb_toggle: 'TB Toggle',
+        enemy_color: 'Düşman Rengi', team_color: 'Takım Rengi', selected_color: 'Seçili Renk',
+        esp_options: 'ESP Seçenekleri', player_box: 'Player Box', health_bar: 'Health Bar', name_tag: 'Name Tag',
+        skeleton: 'Skeleton', distance: 'Mesafe Göster', crosshair: 'Crosshair', ch_style: 'Stil',
+        ch_cross: 'Artı (+)', ch_dot: 'Nokta', ch_circle: 'Daire', ch_none: 'Yok', ch_size: 'Boyut',
+        general_settings: 'Genel Ayarlar', hide_cmd: "Hide CMD",
+        hide_cmd_sub: "Konsol penceresini gizle",
+        beep_sound: 'Ses Bildirimi (Bip)', beep_sound_sub: 'Aimbot açılıp kapanınca bip sesi',
+        startup: 'Başlangıçta Aç', menu_color: 'Menü Rengi', brightness: 'Parlaklık',
+        config_mgmt: 'Config Yönetimi', save_config: 'Config Kaydet', load_config: 'Config Yükle', config_loaded: 'Config yüklendi',
+        general_kb: 'Genel Tuş Atamaları', panel_toggle: 'Paneli Göster/Gizle', panic_key: 'Panic Key', panic_sub: 'Her şeyi devre dışı bırak',
+        active_key: 'Aktif Tuş', active_key_desc: 'Aimbot etkinleştirme tuşu', resolution: 'Çözünürlük',
+        auto_detect: 'Otomatik Algıla', fov_preview: 'FOV Önizleme', status: 'Durum', active: 'Aktif', inactive: 'Pasif',
+        saved: 'Ayarlar kaydedildi',
+        c_red: 'Kırmızı', c_orange: 'Turuncu', c_yellow: 'Sarı', c_green: 'Yeşil', c_cyan: 'Cian', c_blue: 'Mavi', c_purple: 'Mor', c_white: 'Beyaz',
+        magnet_trigger: 'Magnet', enable_magnet: "Magnet'ı Etkinleştir", enable_magnet_sub: "Aimbot ve Trigger'ı aynı tuşta birleştirir",
+        magnet_hint: 'Bu mod aktifken seçili tuşa bastığınızda hem nişan alır hem ateş eder (Key Hold).', magnet_key: 'Magnet Tuşu'
+      },
+      en: {
+        modules: 'Modules', system: 'System', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Game Settings', settings: 'Settings', active_license: 'Active License',
+        running: 'RUNNING', enable_aimbot: 'Enable Aimbot', enable_aimbot_sub: 'Enable automatic aiming',
+        aimbot_fov: 'Aimbot FOV', fov_radius: 'FOV Radius', smooth_speed: 'Smooth & Speed', smooth: 'Smooth', speed: 'Speed',
+        target_settings: 'Target Settings', target_bone: 'Target Bone', prediction: 'Prediction',
+        prediction_sub: 'Temporarily disabled', maintenance: '⚙ Maintenance', team_lock: 'Prevent Team Lock',
+        keybindings: 'Keybindings', kb_hint: 'Click button → press keyboard or mouse key. HOLD=hold down, TRIG=single press.',
+        enable_tb: 'Enable Triggerbot', enable_tb_sub: 'Auto-fire when on target',
+        trigger_delay: 'Trigger Delay', delay: 'Delay', random_offset: 'Random Offset ±',
+        options: 'Options', mode: 'Mode', auto: 'Continuous (Auto)', hold_mode: 'Hold', toggle: 'Toggle',
+        head_only: 'Head Only', fire_random: 'Fire Randomization', aim_toggle: 'Aimbot Toggle', tb_toggle: 'TB Toggle',
+        enemy_color: 'Enemy Color', team_color: 'Team Color', selected_color: 'Selected Color',
+        esp_options: 'ESP Options', player_box: 'Player Box', health_bar: 'Health Bar', name_tag: 'Name Tag',
+        skeleton: 'Skeleton', distance: 'Show Distance', crosshair: 'Crosshair', ch_style: 'Style',
+        ch_cross: 'Cross (+)', ch_dot: 'Dot', ch_circle: 'Circle', ch_none: 'None', ch_size: 'Size',
+        general_settings: 'General Settings', hide_cmd: "Hide CMD",
+        hide_cmd_sub: "Hide the console window",
+        beep_sound: 'Sound Notification (Beep)', beep_sound_sub: 'Beep when aimbot toggles',
+        startup: 'Launch on Startup', menu_color: 'Menu Color', brightness: 'Brightness',
+        config_mgmt: 'Config Yönetimi', save_config: 'Config Paylaş', load_config: 'Config Yükle', config_loaded: 'Config yüklendi',
+        general_kb: 'General Keybindings', panel_toggle: 'Show/Hide Panel', panic_key: 'Panic Key', panic_sub: 'Disable everything',
+        active_key: 'Active Key', active_key_desc: 'Aimbot activation key', resolution: 'Resolution',
+        auto_detect: 'Auto Detect', fov_preview: 'FOV Preview', status: 'Status', active: 'Active', inactive: 'Inactive',
+        saved: 'Settings saved',
+        c_red: 'Red', c_orange: 'Orange', c_yellow: 'Yellow', c_green: 'Green', c_cyan: 'Cyan', c_blue: 'Blue', c_purple: 'Purple', c_white: 'White',
+        magnet_trigger: 'Magnet', enable_magnet: 'Enable Magnet', enable_magnet_sub: 'Combines Aimbot and Trigger on one key',
+        magnet_hint: 'When active, holding the selected key will both aim and shoot.', magnet_key: 'Magnet Key'
+      },
+      pt: {
+        modules: 'Módulos', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Config. de Jogo', settings: 'Configurações', active_license: 'Licença Ativa',
+        running: 'A CORRER', enable_aimbot: 'Ativar Aimbot', enable_aimbot_sub: 'Ativar mira automática',
+        aimbot_fov: 'FOV do Aimbot', fov_radius: 'Raio FOV', smooth_speed: 'Suavidade & Velocidade', smooth: 'Suavidade', speed: 'Velocidade',
+        target_settings: 'Definições de Alvo', target_bone: 'Zona Alvo', prediction: 'Previsão (Prediction)',
+        prediction_sub: 'Temporariamente desativado', maintenance: '⚙ Manutenção', team_lock: 'Prevenir Bloqueio de Equipa',
+        keybindings: 'Teclas', kb_hint: 'Clica no botão → prime tecla ou botão do rato. HOLD=manter, TRIG=pressão única.',
+        enable_tb: 'Ativar Triggerbot', enable_tb_sub: 'Disparo automático ao mirar',
+        trigger_delay: 'Atraso do Gatilho', delay: 'Atraso', random_offset: 'Offset Aleatório ±',
+        options: 'Opções', mode: 'Modo', auto: 'Contínuo (Auto)', hold_mode: 'Manter Premido', toggle: 'Toggle',
+        head_only: 'Apenas Cabeça', fire_random: 'Disparo Aleatório', aim_toggle: 'Toggle Aimbot', tb_toggle: 'Toggle TB',
+        enemy_color: 'Cor do Inimigo', team_color: 'Cor da Equipa', selected_color: 'Cor Selecionada',
+        esp_options: 'Opções ESP', player_box: 'Player Box', health_bar: 'Barra de Vida', name_tag: 'Nome',
+        skeleton: 'Esqueleto', distance: 'Mostrar Distância', crosshair: 'Mira', ch_style: 'Estilo',
+        ch_cross: 'Cruz (+)', ch_dot: 'Ponto', ch_circle: 'Círculo', ch_none: 'Nenhum', ch_size: 'Tamanho',
+        general_settings: 'Definições Gerais', hide_cmd: 'Ocultar CMD', hide_cmd_sub: 'Ocultar a janela da consola',
+        beep_sound: 'Notificação Sonora', beep_sound_sub: 'Bip ao ativar/desativar aimbot',
+        startup: 'Iniciar com o PC', menu_color: 'Cor do Menu', brightness: 'Brilho',
+        config_mgmt: 'Gestão de Config', save_config: 'Guardar Config', load_config: 'Carregar Config', config_loaded: 'Config carregada',
+        general_kb: 'Teclas Gerais', panel_toggle: 'Mostrar/Ocultar Painel', panic_key: 'Tecla Panic', panic_sub: 'Desativar tudo',
+        active_key: 'Tecla Ativa', active_key_desc: 'Tecla de ativação do aimbot', resolution: 'Resolução',
+        auto_detect: 'Deteção Auto', fov_preview: 'Pré-visualização FOV', status: 'Estado', active: 'Ativo', inactive: 'Inativo',
+        reset: 'Repor', save: 'Guardar', saved: 'Definições guardadas',
+        c_red: 'Vermelho', c_orange: 'Laranja', c_yellow: 'Amarelo', c_green: 'Verde', c_cyan: 'Ciano', c_blue: 'Azul', c_purple: 'Roxo', c_white: 'Branco',
+      },
+      br: {
+        modules: 'Módulos', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Config. de Jogo', settings: 'Configurações', active_license: 'Licença Ativa',
+        running: 'ATIVO', enable_aimbot: 'Ativar Aimbot', enable_aimbot_sub: 'Ativar mira automática',
+        aimbot_fov: 'FOV do Aimbot', fov_radius: 'Raio FOV', smooth_speed: 'Suavidade & Velocidade', smooth: 'Suavidade', speed: 'Velocidade',
+        target_settings: 'Config. de Alvo', target_bone: 'Zona Alvo', prediction: 'Previsão (Prediction)',
+        prediction_sub: 'Temporariamente desativado', maintenance: '⚙ Manutenção', team_lock: 'Evitar Tiro Amigo',
+        keybindings: 'Teclas', kb_hint: 'Clique no botão → pressione tecla ou botão do mouse. HOLD=segurar, TRIG=pressão única.',
+        enable_tb: 'Ativar Triggerbot', enable_tb_sub: 'Tiro automático ao mirar no alvo',
+        trigger_delay: 'Atraso do Gatilho', delay: 'Atraso', random_offset: 'Offset Aleatório ±',
+        options: 'Opções', mode: 'Modo', auto: 'Contínuo (Auto)', hold_mode: 'Segurar', toggle: 'Toggle',
+        head_only: 'Apenas Cabeça', fire_random: 'Tiro Aleatório', aim_toggle: 'Toggle Aimbot', tb_toggle: 'Toggle TB',
+        enemy_color: 'Cor do Inimigo', team_color: 'Cor do Time', selected_color: 'Cor Selecionada',
+        esp_options: 'Opções ESP', player_box: 'Caixa do Jogador', health_bar: 'Barra de Vida', name_tag: 'Nome',
+        skeleton: 'Esqueleto', distance: 'Mostrar Distância', crosshair: 'Mira', ch_style: 'Estilo',
+        ch_cross: 'Cruz (+)', ch_dot: 'Ponto', ch_circle: 'Círculo', ch_none: 'Nenhum', ch_size: 'Tamanho',
+        general_settings: 'Configurações Gerais', hide_cmd: 'Ocultar CMD', hide_cmd_sub: 'Ocultar a janela do console',
+        beep_sound: 'Notificação Sonora', beep_sound_sub: 'Bip ao ativar/desativar aimbot',
+        startup: 'Iniciar com o PC', menu_color: 'Cor do Menu', brightness: 'Brilho',
+        config_mgmt: 'Gerenciar Config', save_config: 'Salvar Config', load_config: 'Carregar Config', config_loaded: 'Config carregada',
+        general_kb: 'Teclas Gerais', panel_toggle: 'Mostrar/Ocultar Painel', panic_key: 'Tecla Pânico', panic_sub: 'Desativar tudo',
+        active_key: 'Tecla Ativa', active_key_desc: 'Tecla de ativação do aimbot', resolution: 'Resolução',
+        auto_detect: 'Detecção Auto', fov_preview: 'Pré-visualização FOV', status: 'Status', active: 'Ativo', inactive: 'Inativo',
+        reset: 'Resetar', save: 'Salvar', saved: 'Configurações salvas',
+        c_red: 'Vermelho', c_orange: 'Laranja', c_yellow: 'Amarelo', c_green: 'Verde', c_cyan: 'Ciano', c_blue: 'Azul', c_purple: 'Roxo', c_white: 'Branco',
+      },
+      de: {
+        modules: 'Module', system: 'System', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Spiel-Einstellungen', settings: 'Einstellungen', active_license: 'Aktive Lizenz',
+        running: 'LÄUFT', enable_aimbot: 'Aimbot aktivieren', enable_aimbot_sub: 'Automatisches Zielen aktivieren',
+        aimbot_fov: 'Aimbot FOV', fov_radius: 'FOV-Radius', smooth_speed: 'Smooth & Geschwindigkeit', smooth: 'Smooth', speed: 'Geschwindigkeit',
+        target_settings: 'Ziel-Einstellungen', target_bone: 'Ziel-Knochen', prediction: 'Vorhersage',
+        prediction_sub: 'Vorübergehend deaktiviert', maintenance: '⚙ Wartung', team_lock: 'Team-Sperre verhindern',
+        keybindings: 'Tastenbelegung', kb_hint: 'Kliken → Taste drücken. HOLD=halten, TRIG=einmal drücken.',
+        enable_tb: 'Triggerbot aktivieren', enable_tb_sub: 'Automatisches Feuern auf Ziel',
+        trigger_delay: 'Trigger-Verzögerung', delay: 'Verzögerung', random_offset: 'Zufälliger Offset ±',
+        options: 'Optionen', mode: 'Modus', auto: 'Dauerhaft (Auto)', hold_mode: 'Halten', toggle: 'Umschalten',
+        head_only: 'Nur Kopf', fire_random: 'Feuer-Randomisierung', aim_toggle: 'Aimbot Umschalter', tb_toggle: 'TB Umschalter',
+        enemy_color: 'Gegnerfarbe', team_color: 'Teamfarbe', selected_color: 'Ausgewählte Farbe',
+        esp_options: 'ESP Optionen', player_box: 'Spieler-Box', health_bar: 'Lebensbalken', name_tag: 'Namensschild',
+        skeleton: 'Skelett', distance: 'Entfernung anzeigen', crosshair: 'Fadenkreuz', ch_style: 'Stil',
+        ch_cross: 'Kreuz (+)', ch_dot: 'Punkt', ch_circle: 'Kreis', ch_none: 'Keines', ch_size: 'Größe',
+        general_settings: 'Allgemeine Einstellungen', hide_cmd: 'CMD verbergen',
+        hide_cmd_sub: 'Konsolenfenster ausblenden',
+        beep_sound: 'Tonbenachrichtigung (Piep)', beep_sound_sub: 'Piepton beim Umschalten des Aimbots',
+        startup: 'Beim Start ausführen', menu_color: 'Menüfarbe', brightness: 'Helligkeit',
+        config_mgmt: 'Konfigverwaltung', save_config: 'Konfig speichern', load_config: 'Konfig laden', config_loaded: 'Konfig geladen',
+        general_kb: 'Allgemeine Tastenbelegungen', panel_toggle: 'Panel zeigen/verbergen', panic_key: 'Panik-Taste', panic_sub: 'Alles deaktivieren',
+        active_key: 'Aktive Taste', active_key_desc: 'Aimbot-Aktivierungstaste', resolution: 'Auflösung',
+        auto_detect: 'Auto-Erkennung', fov_preview: 'FOV-Vorschau', status: 'Status', active: 'Aktiv', inactive: 'Inaktiv',
+        reset: 'Zurücksetzen', save: 'Speichern', saved: 'Einstellungen gespeichert',
+        c_red: 'Rot', c_orange: 'Orange', c_yellow: 'Gelb', c_green: 'Grün', c_cyan: 'Türkis', c_blue: 'Blau', c_purple: 'Lila', c_white: 'Weiß',
+      },
+      fr: {
+        modules: 'Modules', system: 'Système', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Paramètres du Jeu', settings: 'Paramètres', active_license: 'Licence Active',
+        running: 'EN COURS', enable_aimbot: 'Activer Aimbot', enable_aimbot_sub: 'Activer la visée automatique',
+        aimbot_fov: 'FOV Aimbot', fov_radius: 'Rayon FOV', smooth_speed: 'Lissage & Vitesse', smooth: 'Lissage', speed: 'Vitesse',
+        target_settings: 'Paramètres Cible', target_bone: 'Zone Cible', prediction: 'Prédiction',
+        prediction_sub: 'Désactivé temporairement', maintenance: '⚙ Maintenance', team_lock: 'Empêcher Verrouillage Équipe',
+        keybindings: 'Raccourcis Touches', kb_hint: 'Cliquer → appuyer sur touche. HOLD=maintenir, TRIG=une seule pression.',
+        enable_tb: 'Activer Triggerbot', enable_tb_sub: 'Tir auto quand sur cible',
+        trigger_delay: 'Délai Déclenchement', delay: 'Délai', random_offset: 'Offset Aléatoire ±',
+        options: 'Options', mode: 'Mode', auto: 'Continu (Auto)', hold_mode: 'Maintenir', toggle: 'Basculer',
+        head_only: 'Tête seulement', fire_random: 'Randomisation Tir', aim_toggle: 'Toggle Aimbot', tb_toggle: 'Toggle TB',
+        enemy_color: 'Couleur Ennemi', team_color: 'Couleur Équipe', selected_color: 'Couleur Sélectionnée',
+        esp_options: 'Options ESP', player_box: 'Boîte Joueur', health_bar: 'Barre de Vie', name_tag: 'Nom',
+        skeleton: 'Squelette', distance: 'Afficher Distance', crosshair: 'Réticule', ch_style: 'Style',
+        ch_cross: 'Croix (+)', ch_dot: 'Point', ch_circle: 'Cercle', ch_none: 'Aucun', ch_size: 'Taille',
+        general_settings: 'Paramètres Généraux', hide_cmd: 'Masquer CMD',
+        hide_cmd_sub: 'Masquer la fenêtre de console',
+        beep_sound: 'Notification Sonore (Bip)', beep_sound_sub: 'Bip lors du basculement de l\'aimbot',
+        startup: 'Lancer au démarrage', menu_color: 'Couleur Menu', brightness: 'Luminosité',
+        config_mgmt: 'Gestion Config', save_config: 'Sauvegarder Config', load_config: 'Charger Config', config_loaded: 'Config chargée',
+        general_kb: 'Raccourcis Généraux', panel_toggle: 'Afficher/Masquer Panneau', panic_key: 'Touche Panique', panic_sub: 'Tout désactiver',
+        active_key: 'Touche Active', active_key_desc: 'Touche d\'activation aimbot', resolution: 'Résolution',
+        auto_detect: 'Détection Auto', fov_preview: 'Aperçu FOV', status: 'Statut', active: 'Actif', inactive: 'Inactif',
+        reset: 'Réinitialiser', save: 'Enregistrer', saved: 'Paramètres enregistrés',
+        c_red: 'Rouge', c_orange: 'Orange', c_yellow: 'Jaune', c_green: 'Vert', c_cyan: 'Cyan', c_blue: 'Bleu', c_purple: 'Violet', c_white: 'Blanc',
+      },
+      es: {
+        modules: 'Módulos', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Ajustes de Juego', settings: 'Ajustes', active_license: 'Licencia Activa',
+        running: 'EJECUTANDO', enable_aimbot: 'Activar Aimbot', enable_aimbot_sub: 'Activar apuntado automático',
+        aimbot_fov: 'FOV Aimbot', fov_radius: 'Radio FOV', smooth_speed: 'Suavizado & Velocidad', smooth: 'Suavizado', speed: 'Velocidad',
+        target_settings: 'Ajustes de Objetivo', target_bone: 'Hueso Objetivo', prediction: 'Predicción',
+        prediction_sub: 'Desactivado temporalmente', maintenance: '⚙ Mantenimiento', team_lock: 'Evitar Bloqueo Equipo',
+        keybindings: 'Asignación de Teclas', kb_hint: 'Click → presionar tecla. HOLD=mantener, TRIG=una pulsación.',
+        enable_tb: 'Activar Triggerbot', enable_tb_sub: 'Disparo auto sobre objetivo',
+        trigger_delay: 'Retraso de Disparo', delay: 'Retraso', random_offset: 'Offset Aleatorio ±',
+        options: 'Opciones', mode: 'Modo', auto: 'Continuo (Auto)', hold_mode: 'Mantener', toggle: 'Toggle',
+        head_only: 'Solo Cabeza', fire_random: 'Aleatorizar Disparo', aim_toggle: 'Activar Aimbot', tb_toggle: 'Activar TB',
+        enemy_color: 'Color Enemigo', team_color: 'Color Equipo', selected_color: 'Color Seleccionado',
+        esp_options: 'Opciones ESP', player_box: 'Caja Jugador', health_bar: 'Barra de Vida', name_tag: 'Nombre',
+        skeleton: 'Esqueleto', distance: 'Mostrar Distancia', crosshair: 'Mira', ch_style: 'Estilo',
+        ch_cross: 'Cruz (+)', ch_dot: 'Punto', ch_circle: 'Círculo', ch_none: 'Ninguno', ch_size: 'Tamaño',
+        general_settings: 'Ajustes Generales', hide_cmd: 'Ocultar CMD',
+        hide_cmd_sub: 'Ocultar ventana de consola',
+        beep_sound: 'Sonido de Notificación (Bip)', beep_sound_sub: 'Pitido al activar/desactivar aimbot',
+        startup: 'Abrir al Iniciar', menu_color: 'Color de Menú', brightness: 'Brillo',
+        config_mgmt: 'Gestión Config', save_config: 'Guardar Config', load_config: 'Cargar Config', config_loaded: 'Config cargada',
+        general_kb: 'Teclas Generales', panel_toggle: 'Mostrar/Ocultar Panel', panic_key: 'Tecla Pánico', panic_sub: 'Desactivar todo',
+        active_key: 'Tecla Activa', active_key_desc: 'Tecla activación aimbot', resolution: 'Resolución',
+        auto_detect: 'Detección Auto', fov_preview: 'Previsualización FOV', status: 'Estado', active: 'Activo', inactive: 'Inactivo',
+        reset: 'Reiniciar', save: 'Guardar', saved: 'Ajustes guardados',
+        c_red: 'Rojo', c_orange: 'Naranja', c_yellow: 'Amarillo', c_green: 'Verde', c_cyan: 'Cian', c_blue: 'Azul', c_purple: 'Púrpura', c_white: 'Blanco',
+      },
+      it: {
+        modules: 'Moduli', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Impostazioni Gioco', settings: 'Impostazioni', active_license: 'Licenza Attiva',
+        running: 'IN ESECUZIONE', enable_aimbot: 'Attiva Aimbot', enable_aimbot_sub: 'Attiva puntamento automatico',
+        aimbot_fov: 'FOV Aimbot', fov_radius: 'Raggio FOV', smooth_speed: 'Fluidità & Velocità', smooth: 'Fluidità', speed: 'Velocità',
+        target_settings: 'Impostazioni Bersaglio', target_bone: 'Zona Bersaglio', prediction: 'Predizione',
+        prediction_sub: 'Temporaneamente disabilitato', maintenance: '⚙ Manutenzione', team_lock: 'Previeni Blocco Team',
+        keybindings: 'Comandi Tasti', kb_hint: 'Clicca → premi tasto. HOLD=tieni premuto, TRIG=una pressione.',
+        enable_tb: 'Attiva Triggerbot', enable_tb_sub: 'Fuoco auto su bersaglio',
+        trigger_delay: 'Ritardo Grilletto', delay: 'Ritardo', random_offset: 'Offset Casuale ±',
+        options: 'Opzioni', mode: 'Modalità', auto: 'Continuo (Auto)', hold_mode: 'Tieni premuto', toggle: 'Alterna',
+        head_only: 'Solo Testa', fire_random: 'Fuoco Casuale', aim_toggle: 'Toggle Aimbot', tb_toggle: 'Toggle TB',
+        enemy_color: 'Colore Nemico', team_color: 'Colore Team', selected_color: 'Colore Selezionato',
+        esp_options: 'Opzioni ESP', player_box: 'Box Giocatore', health_bar: 'Barra Vita', name_tag: 'Nome',
+        skeleton: 'Scheletro', distance: 'Mostra Distanza', crosshair: 'Mirino', ch_style: 'Stile',
+        ch_cross: 'Croce (+)', ch_dot: 'Punto', ch_circle: 'Cerchio', ch_none: 'Nessuno', ch_size: 'Dimensione',
+        general_settings: 'Impostazioni Generali', hide_cmd: 'Nascondi CMD',
+        hide_cmd_sub: 'Nascondi la finestra della console',
+        beep_sound: 'Notifica Sonora (Beep)', beep_sound_sub: 'Segnale acustico all\'attivazione aimbot',
+        startup: 'Avvia all\'avvio', menu_color: 'Colore Menu', brightness: 'Luminosità',
+        config_mgmt: 'Gestione Config', save_config: 'Salva Config', load_config: 'Carica Config', config_loaded: 'Config caricata',
+        general_kb: 'Comandi Generali', panel_toggle: 'Mostra/Nascondi Pannello', panic_key: 'Tasto Panico', panic_sub: 'Disabilita tutto',
+        active_key: 'Tasto Attivo', active_key_desc: 'Tasto attivazione aimbot', resolution: 'Risoluzione',
+        auto_detect: 'Rilevamento Auto', fov_preview: 'Anteprima FOV', status: 'Stato', active: 'Attivo', inactive: 'Inattivo',
+        reset: 'Resetta', save: 'Salva', saved: 'Impostazioni salvate',
+        c_red: 'Rosso', c_orange: 'Arancione', c_yellow: 'Giallo', c_green: 'Verde', c_cyan: 'Ciano', c_blue: 'Blu', c_purple: 'Viola', c_white: 'Bianco',
+      },
+      ru: {
+        modules: 'Модули', system: 'Система', aimbot: 'Аимбот', triggerbot: 'Триггербот',
+        game_settings: 'Игровые Настройки', settings: 'Настройки', active_license: 'Активная Лицензия',
+        running: 'РАБОТАЕТ', enable_aimbot: 'Включить Аимбот', enable_aimbot_sub: 'Включить авто-наведение',
+        aimbot_fov: 'FOV Аимбота', fov_radius: 'Радиус FOV', smooth_speed: 'Плавность и Скорость', smooth: 'Плавность', speed: 'Скорость',
+        target_settings: 'Настройки Цели', target_bone: 'Часть тела', prediction: 'Предсказание',
+        prediction_sub: 'Временно отключено', maintenance: '⚙ На обслуживании', team_lock: 'Блокировка по своим',
+        keybindings: 'Клавиши', kb_hint: 'Нажми кнопку → нажми клавишу. HOLD=удерживать, TRIG=одно нажатие.',
+        enable_tb: 'Включить Триггербот', enable_tb_sub: 'Авто-выстрел при наведении',
+        trigger_delay: 'Задержка выстрела', delay: 'Задержка', random_offset: 'Случайное смещение ±',
+        options: 'Опции', mode: 'Режим', auto: 'Автоматический', hold_mode: 'Удержание', toggle: 'Переключение',
+        head_only: 'Только Голова', fire_random: 'Рандом стрельбы', aim_toggle: 'Аим Переключатель', tb_toggle: 'ТБ Переключатель',
+        enemy_color: 'Цвет Врага', team_color: 'Цвет Команды', selected_color: 'Выбранный Цвет',
+        esp_options: 'ESP Опции', player_box: 'Бокс Игрока', health_bar: 'Полоска ХП', name_tag: 'Имя',
+        skeleton: 'Скелет', distance: 'Дистанция', crosshair: 'Прицел', ch_style: 'Стиль',
+        ch_cross: 'Крест (+)', ch_dot: 'Точка', ch_circle: 'Круг', ch_none: 'Нет', ch_size: 'Размер',
+        general_settings: 'Общие Настройки', hide_cmd: 'Скрыть Командную строку',
+        hide_cmd_sub: 'Скрыть окно консоли',
+        beep_sound: 'Звуковой сигнал (Бип)', beep_sound_sub: 'Сигнал при включении аимбота',
+        startup: 'Автозагрузка', menu_color: 'Цвет Меню', brightness: 'Яркость',
+        config_mgmt: 'Управление Конфигом', save_config: 'Сохранить Конфиг', load_config: 'Загрузить Конфиг', config_loaded: 'Конфиг загружен',
+        general_kb: 'Общие Клавиши', panel_toggle: 'Скрыть/Показать Панель', panic_key: 'Кнопка Паники', panic_sub: 'Отключить всё',
+        active_key: 'Активная Клавиша', active_key_desc: 'Клавиша активации аимбота', resolution: 'Разрешение',
+        auto_detect: 'Авто-определение', fov_preview: 'Превью FOV', status: 'Статус', active: 'Активен', inactive: 'Неактивен',
+        reset: 'Сброс', save: 'Сохранить', saved: 'Настройки сохранены',
+        c_red: 'Красный', c_orange: 'Оранжевый', c_yellow: 'Желтый', c_green: 'Зеленый', c_cyan: 'Циан', c_blue: 'Синий', c_purple: 'Фиолетовый', c_white: 'Белый',
+      },
+      ja: {
+        modules: 'モジュール', system: 'システム', aimbot: 'エイムボット', triggerbot: 'トリガーボット',
+        game_settings: 'ゲーム設定', settings: '設定', active_license: '有効なライセンス',
+        running: '実行中', enable_aimbot: 'エイムボットを有効化', enable_aimbot_sub: '自動照準を有効にする',
+        aimbot_fov: 'エイムボット範囲', fov_radius: 'FOV半径', smooth_speed: 'スムーズ & 速度', smooth: 'スムーズ', speed: '速度',
+        target_settings: 'ターゲット設定', target_bone: 'ターゲット部位', prediction: '予測',
+        prediction_sub: '一時的に無効', maintenance: '⚙ メンテナンス中', team_lock: 'チームロック防止',
+        keybindings: 'キー設定', kb_hint: 'ボタンをクリック → キーを入力。HOLD=長押し、TRIG=1回押し。',
+        enable_tb: 'トリガーボットを有効化', enable_tb_sub: 'ターゲット時に自動射撃',
+        trigger_delay: '射撃遅延', delay: '遅延', random_offset: 'ランダムオフセット ±',
+        options: 'オプション', mode: 'モード', auto: '自動 (Auto)', hold_mode: 'ホールド', toggle: 'トグル',
+        head_only: '頭部のみ', fire_random: '射撃ランダム化', aim_toggle: 'エイム切り替え', tb_toggle: 'TB切り替え',
+        enemy_color: '敵の色', team_color: 'チームの色', selected_color: '選択中の色',
+        esp_options: 'ESPオプション', player_box: 'プレイヤーボックス', health_bar: '体力バー', name_tag: 'ネームタグ',
+        skeleton: 'スケルトン', distance: '距離表示', crosshair: '照準', ch_style: 'スタイル',
+        ch_cross: '十字 (+)', ch_dot: '点', ch_circle: '円', ch_none: 'なし', ch_size: 'サイズ',
+        general_settings: '一般設定', hide_cmd: 'CMDを隠す',
+        hide_cmd_sub: 'コンソールウィンドウを非表示にする',
+        beep_sound: '通知音 (ビープ)', beep_sound_sub: 'エイムボット切り替え時にビープ音',
+        startup: 'スタートアップ時に起動', menu_color: 'メニューの色', brightness: '明るさ',
+        config_mgmt: '設定管理', save_config: '設定を保存', load_config: '設定を読み込む', config_loaded: '設定を読み込みました',
+        general_kb: '共通キー設定', panel_toggle: 'パネル表示/非表示', panic_key: 'パニックキー', panic_sub: 'すべて無効化',
+        active_key: 'アクティブキー', active_key_desc: 'エイムボット有効化キー', resolution: '解像度',
+        auto_detect: '自動検出', fov_preview: 'FOVプレビュー', status: 'ステータス', active: 'アクティブ', inactive: '非アクティブ',
+        reset: 'リセット', save: '保存', saved: '設定を保存しました',
+        c_red: '赤', c_orange: 'オレンジ', c_yellow: '黄', c_green: '緑', c_cyan: 'シアン', c_blue: '青', c_purple: '紫', c_white: '白',
+      },
+      zh: {
+        modules: '模块', system: '系统', aimbot: '自瞄', triggerbot: '自动开火',
+        game_settings: '游戏设置', settings: '设置', active_license: '激活许可证',
+        running: '运行中', enable_aimbot: '启用自瞄', enable_aimbot_sub: '启用自动瞄准',
+        aimbot_fov: '自瞄范围', fov_radius: '范围半径', smooth_speed: '平滑与速度', smooth: '平滑度', speed: '速度',
+        target_settings: '目标设置', target_bone: '目标部位', prediction: '预测',
+        prediction_sub: '暂时禁用', maintenance: '⚙ 维护中', team_lock: '防止瞄准队友',
+        keybindings: '按键绑定', kb_hint: '点击按钮 → 按下键盘或鼠标键. HOLD=长按, TRIG=单击.',
+        enable_tb: '启用自动开火', enable_tb_sub: '瞄准目标时自动开火',
+        trigger_delay: '开火延迟', delay: '延迟', random_offset: '随机偏移 ±',
+        options: '选项', mode: '模式', auto: '自动 (Auto)', hold_mode: '按住', toggle: '切换',
+        head_only: '仅限头部', fire_random: '开火随机化', aim_toggle: '自瞄切换', tb_toggle: 'TB切换',
+        enemy_color: '敌人颜色', team_color: '队友颜色', selected_color: '已选颜色',
+        esp_options: 'ESP 选项', player_box: '方框', health_bar: '血条', name_tag: '名字',
+        skeleton: '骨骼', distance: '显示距离', crosshair: '准星', ch_style: '样式',
+        ch_cross: '十字 (+)', ch_dot: '点', ch_circle: '圆圈', ch_none: '无', ch_size: '尺寸',
+        general_settings: '常规设置', hide_cmd: '隐藏控制台',
+        hide_cmd_sub: '隐藏控制台窗口',
+        beep_sound: '声音提示 (蜂鸣)', beep_sound_sub: '切换自瞄时发出蜂鸣声',
+        startup: '开机启动', menu_color: '菜单颜色', brightness: '亮度',
+        config_mgmt: '配置管理', save_config: '保存配置', load_config: '加载配置', config_loaded: '配置已加载',
+        general_kb: '常规按键绑定', panel_toggle: '显示/隐藏面板', panic_key: '紧急按键', panic_sub: '禁用所有功能',
+        active_key: '激活按键', active_key_desc: '自瞄激活按键', resolution: '分辨率',
+        auto_detect: '自动检测', fov_preview: '范围预览', status: '状态', active: '激活', inactive: '未激活',
+        reset: '重置', save: '保存', saved: '设置已保存',
+        c_red: '红色', c_orange: '橙色', c_yellow: '黄色', c_green: '绿色', c_cyan: '青色', c_blue: '蓝色', c_purple: '紫色', c_white: '白色',
+      },
+      ko: {
+        modules: '모듈', system: '시스템', aimbot: '에임봇', triggerbot: '트리거봇',
+        game_settings: '게임 설정', settings: '설정', active_license: '활성 라이선스',
+        running: '실행 중', enable_aimbot: '에임봇 활성화', enable_aimbot_sub: '자동 조준 활성화',
+        aimbot_fov: '에임봇 FOV', fov_radius: 'FOV 반경', smooth_speed: '부드러움 및 속도', smooth: '부드러움', speed: '속도',
+        target_settings: '대상 설정', target_bone: '대상 부위', prediction: '예측',
+        prediction_sub: '일시적으로 비활성화됨', maintenance: '⚙ 점검 중', team_lock: '아군 조준 방지',
+        keybindings: '키 바인딩', kb_hint: '버튼 클릭 → 키 입력. HOLD=길게 누르기, TRIG=한 번 누르기.',
+        enable_tb: '트리거봇 활성화', enable_tb_sub: '대상 조준 시 자동 사격',
+        trigger_delay: '트리거 지연', delay: '지연', random_offset: '무작위 오프셋 ±',
+        options: '옵션', mode: '모드', auto: '자동 (Auto)', hold_mode: '홀드', toggle: '토글',
+        head_only: '헤드 전용', fire_random: '사격 무작위화', aim_toggle: '에임 토글', tb_toggle: 'TB 토글',
+        enemy_color: '적 색상', team_color: '팀 색상', selected_color: '선택된 색상',
+        esp_options: 'ESP 옵션', player_box: '플레이어 박스', health_bar: '체력 바', name_tag: '이름표',
+        skeleton: '스켈레톤', distance: '거리 표시', crosshair: '크로스헤어', ch_style: '스타일',
+        ch_cross: '십자 (+)', ch_dot: '점', ch_circle: '원', ch_none: '없음', ch_size: '크기',
+        general_settings: '일반 설정', hide_cmd: 'CMD 숨기기',
+        hide_cmd_sub: '콘솔 창 숨기기',
+        beep_sound: '사운드 알림 (비프음)', beep_sound_sub: '에임봇 전환 시 비프음',
+        startup: '시작 시 실행', menu_color: '메뉴 색상', brightness: '밝기',
+        config_mgmt: '설정 관리', save_config: '설정 저장', load_config: '설정 불러오기', config_loaded: '설정이 로드되었습니다',
+        general_kb: '일반 키 바인딩', panel_toggle: '패널 표시/숨기기', panic_key: '패닉 키', panic_sub: '모든 기능 비활성화',
+        active_key: '활성 키', active_key_desc: '에임봇 활성화 키', resolution: '해상도',
+        auto_detect: '자동 감지', fov_preview: 'FOV 미리보기', status: '상태', active: '활성', inactive: '비활성',
+        reset: '초기화', save: '저장', saved: '설정이 저장되었습니다',
+        c_red: '빨간색', c_orange: '주황색', c_yellow: '노란색', c_green: '초록색', c_cyan: '시안색', c_blue: '파란색', c_purple: '보라색', c_white: '하얀색',
+      },
+      ar: {
+        modules: 'الوحدات', system: 'النظام', aimbot: 'ايمبوت', triggerbot: 'تريجربوت',
+        game_settings: 'إعدادات اللعبة', settings: 'الإعدادات', active_license: 'الترخيص النشط',
+        running: 'يعمل', enable_aimbot: 'تفعيل الايمبوت', enable_aimbot_sub: 'تفعيل التصويب التلقائي',
+        aimbot_fov: 'مجال رؤية الايمبوت', fov_radius: 'نطاق الرؤية', smooth_speed: 'السلاسة والسرعة', smooth: 'السلاسة', speed: 'السرعة',
+        target_settings: 'إعدادات الهدف', target_bone: 'منطقة الهدف', prediction: 'التوقعات',
+        prediction_sub: 'معطل حاليا', maintenance: '⚙ قيد الصيانة', team_lock: 'منع قفل الفريق',
+        keybindings: 'اختصارات الأزرار', kb_hint: 'اضغط على الزر ← ثم اضغط على الزر المطلوب. HOLD=استمرار، TRIG=ضغطة واحدة.',
+        enable_tb: 'تفعيل التريجربوت', enable_tb_sub: 'إطلاق نار تلقائي عند التصويب على الهدف',
+        trigger_delay: 'تأخير التفعيل', delay: 'تأخير', random_offset: 'إزاحة عشوائية ±',
+        options: 'الخيارات', mode: 'الوضع', auto: 'تلقائي (Auto)', hold_mode: 'استمرار الضغط', toggle: 'تبديل',
+        head_only: 'الرأس فقط', fire_random: 'عشوائية الإطلاق', aim_toggle: 'تبديل الايمبوت', tb_toggle: 'تبديل التريجر',
+        enemy_color: 'لون العدو', team_color: 'لون الفريق', selected_color: 'اللون المختار',
+        esp_options: 'خيارات ESP', player_box: 'صندوق اللاعب', health_bar: 'شريط الصحة', name_tag: 'اسم اللاعب',
+        skeleton: 'الهيكل العظمي', distance: 'عرض المسافة', crosshair: 'نقطة التصويب', ch_style: 'النمط',
+        ch_cross: 'علامة زائد (+)', ch_dot: 'نقطة', ch_circle: 'دائرة', ch_none: 'لا يوجد', ch_size: 'الحجم',
+        general_settings: 'الإعدادات العامة', hide_cmd: 'إخفاء نافذة الأوامر',
+        hide_cmd_sub: 'إخفاء نافذة الكونسول',
+        beep_sound: 'إشعار صوتي (صافرة)', beep_sound_sub: 'صافرة عند تفعيل الايمبوت',
+        startup: 'تشغيل عند بدء التشغيل', menu_color: 'لون القائمة', brightness: 'السطوع',
+        config_mgmt: 'إدارة الإعدادات', save_config: 'حفظ الإعدادات', load_config: 'تحميل الإعدادات', config_loaded: 'تم تحميل الإعدادات',
+        general_kb: 'اختصارات عامة', panel_toggle: 'إظهار/إخفاء اللوحة', panic_key: 'زر الطوارئ', panic_sub: 'تعطيل كل شيء',
+        active_key: 'الزر النشط', active_key_desc: 'زر تفعيل الايمبوت', resolution: 'الدقة',
+        auto_detect: 'كشف تلقائي', fov_preview: 'معاينة مجال الرؤية', status: 'الحالة', active: 'نشط', inactive: 'غير نشط',
+        reset: 'إعادة ضبط', save: 'حفظ', saved: 'تم حفظ الإعدادات',
+        c_red: 'أحمر', c_orange: 'برتقالي', c_yellow: 'أصفر', c_green: 'أخضر', c_cyan: 'سماوي', c_blue: 'أزرق', c_purple: 'أرجواني', c_white: 'أبيض',
+      },
+      vi: {
+        modules: 'Mô-đun', system: 'Hệ thống', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Cài đặt trò chơi', settings: 'Cài đặt', active_license: 'Giấy phép hoạt động',
+        running: 'ĐANG CHẠY', enable_aimbot: 'Bật Aimbot', enable_aimbot_sub: 'Bật tự động nhắm mục tiêu',
+        aimbot_fov: 'Phạm vi Aimbot', fov_radius: 'Bán kính FOV', smooth_speed: 'Độ mượt & Tốc độ', smooth: 'Độ mượt', speed: 'Tốc độ',
+        target_settings: 'Cài đặt mục tiêu', target_bone: 'Vùng mục tiêu', prediction: 'Dự đoán',
+        prediction_sub: 'Tạm thời bị vô hiệu hóa', maintenance: '⚙ Đang bảo trì', team_lock: 'Tránh khóa đồng đội',
+        keybindings: 'Phím tắt', kb_hint: 'Nhấp vào nút → nhấn phím. HOLD=giữ, TRIG=nhấn một lần.',
+        enable_tb: 'Bật Triggerbot', enable_tb_sub: 'Tự động bắn khi nhắm trúng',
+        trigger_delay: 'Độ trễ kích hoạt', delay: 'Độ trễ', random_offset: 'Sai số ngẫu nhiên ±',
+        options: 'Tùy chọn', mode: 'Chế độ', auto: 'Tự động (Auto)', hold_mode: 'Giữ', toggle: 'Chuyển đổi',
+        head_only: 'Chỉ đầu', fire_random: 'Bắn ngẫu nhiên', aim_toggle: 'Bật/tắt Aimbot', tb_toggle: 'Bật/tắt TB',
+        enemy_color: 'Màu kẻ địch', team_color: 'Màu đồng đội', selected_color: 'Màu đã chọn',
+        esp_options: 'Tùy chọn ESP', player_box: 'Khung người chơi', health_bar: 'Thanh máu', name_tag: 'Tên',
+        skeleton: 'Xương', distance: 'Hiển thị khoảng cách', crosshair: 'Tâm ngắm', ch_style: 'Kiểu',
+        ch_cross: 'Chữ thập (+)', ch_dot: 'Chấm', ch_circle: 'Vòng tròn', ch_none: 'Không có', ch_size: 'Kích thước',
+        general_settings: 'Cài đặt chung', hide_cmd: 'Ẩn CMD',
+        hide_cmd_sub: 'Ẩn cửa sổ bảng điều khiển',
+        beep_sound: 'Thông báo âm thanh (Bíp)', beep_sound_sub: 'Âm thanh bíp khi bật/tắt aimbot',
+        startup: 'Khởi động cùng máy tính', menu_color: 'Màu menu', brightness: 'Độ sáng',
+        config_mgmt: 'Quản lý cấu hình', save_config: 'Lưu cấu hình', load_config: 'Tải cấu hình', config_loaded: 'Đã tải cấu hình',
+        general_kb: 'Phím tắt chung', panel_toggle: 'Hiện/Ẩn bảng điều khiển', panic_key: 'Phím khẩn cấp', panic_sub: 'Vô hiệu hóa tất cả',
+        active_key: 'Phím kích hoạt', active_key_desc: 'Phím bật aimbot', resolution: 'Độ phân giải',
+        auto_detect: 'Tự động phát hiện', fov_preview: 'Xem trước FOV', status: 'Trạng thái', active: 'Kích hoạt', inactive: 'Vô hiệu',
+        reset: 'Đặt lại', save: 'Lưu', saved: 'Đã lưu cài đặt',
+        c_red: 'Đỏ', c_orange: 'Cam', c_yellow: 'Vàng', c_green: 'Xanh lá', c_cyan: 'Xanh lơ', c_blue: 'Xanh dương', c_purple: 'Tím', c_white: 'Trắng',
+      },
+      pl: {
+        modules: 'Moduły', system: 'System', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
+        game_settings: 'Ustawienia Gry', settings: 'Ustawienia', active_license: 'Aktywna Licencja',
+        running: 'URUCHOMIONO', enable_aimbot: 'Włącz Aimbot', enable_aimbot_sub: 'Włącz automatyczne celowanie',
+        aimbot_fov: 'Zasięg Aimbota', fov_radius: 'Promień FOV', smooth_speed: 'Gładkość i Szybkość', smooth: 'Gładkość', speed: 'Szybkość',
+        target_settings: 'Ustawienia Celowania', target_bone: 'Część Ciała', prediction: 'Predykcja',
+        prediction_sub: 'Tymczasowo wyłączone', maintenance: '⚙ Konserwacja', team_lock: 'Blokada na Sojuszników',
+        keybindings: 'Skróty Klawiszowe', kb_hint: 'Kliknij przycisk → naciśnij klawisz. HOLD=przytrzymaj, TRIG=pojedyncze naciśnięcie.',
+        enable_tb: 'Włącz Triggerbot', enable_tb_sub: 'Automatyczny strzał po nakierowaniu',
+        trigger_delay: 'Opóźnienie Strzału', delay: 'Opóźnienie', random_offset: 'Losowe Przesunięcie ±',
+        options: 'Opcje', mode: 'Tryb', auto: 'Ciągły (Auto)', hold_mode: 'Przytrzymaj', toggle: 'Przełącz',
+        head_only: 'Tylko Głowa', fire_random: 'Losowość Strzału', aim_toggle: 'Przełącz Aimbota', tb_toggle: 'Przełącz TB',
+        enemy_color: 'Kolor Przeciwnika', team_color: 'Kolor Drużyny', selected_color: 'Wybrany Kolor',
+        esp_options: 'Opcje ESP', player_box: 'Pole Gracza', health_bar: 'Pasek Zdrowia', name_tag: 'Imię',
+        skeleton: 'Szkielet', distance: 'Pokaż Odległość', crosshair: 'Celownik', ch_style: 'Styl',
+        ch_cross: 'Krzyżyk (+)', ch_dot: 'Kropka', ch_circle: 'Kółko', ch_none: 'Brak', ch_size: 'Rozmiar',
+        general_settings: 'Ustawienia Ogólne', hide_cmd: 'Ukryj CMD',
+        hide_cmd_sub: 'Ukryj okno konsoli',
+        beep_sound: 'Powiadomienie Dźwiękowe (Bip)', beep_sound_sub: 'Dźwięk bip przy przełączaniu aimbota',
+        startup: 'Uruchom przy starcie', menu_color: 'Kolor Menu', brightness: 'Jasność',
+        config_mgmt: 'Zarządzanie Configiem', save_config: 'Zapisz Config', load_config: 'Wczytaj Config', config_loaded: 'Wczytano config',
+        general_kb: 'Ogólne Skróty', panel_toggle: 'Pokaż/Ukryj Panel', panic_key: 'Klawisz Paniki', panic_sub: 'Wyłącz wszystko',
+        active_key: 'Aktywny Klawisz', active_key_desc: 'Klawisz aktywacji aimbota', resolution: 'Rozdzielczość',
+        auto_detect: 'Auto Wykrywanie', fov_preview: 'Podgląd FOV', status: 'Status', active: 'Aktywny', inactive: 'Nieaktywny',
+        reset: 'Resetuj', save: 'Zapisz', saved: 'Ustawienia zapisane',
+        c_red: 'Czerwony', c_orange: 'Pomarańczowy', c_yellow: 'Żółty', c_green: 'Zielony', c_cyan: 'Cyjan', c_blue: 'Niebieski', c_purple: 'Fioletowy', c_white: 'Biały',
+      }
+    };
+
+    function T(k) { return (i18n[curLang] || i18n.tr)[k] || k; }
+
+    function applyLang() {
+      try {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.getAttribute('data-i18n');
+          const v = T(k);
+          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+          el.textContent = v;
+        });
+
+        const langLabel = document.getElementById('lang-label');
+        if (langLabel) langLabel.textContent = LANG_LABELS[curLang] || curLang.toUpperCase();
+
+        const bcEl = document.getElementById('bc-page');
+        if (bcEl && typeof curPageId !== 'undefined') {
+          const key = curPageId === 'game' ? 'game_settings' : (curPageId === 'magnet' ? 'magnet_trigger' : (curPageId === 'settings' ? 'settings' : curPageId));
+          bcEl.textContent = T(key);
+        }
+
+        const statusAim = document.getElementById('stat-aim');
+        if (statusAim) {
+          const isAimbotOn = document.getElementById('aim-en')?.checked;
+          statusAim.textContent = isAimbotOn ? T('active') : T('inactive');
+        }
+      } catch (err) {
+        console.error("applyLang error:", err);
+      }
+    }
+
+    function toggleLangMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('lang-menu');
+      const overlay = document.getElementById('modal-overlay');
+      const isVisible = menu.style.display === 'block';
+
+      if (isVisible) {
+        closeAllModals();
+      } else {
+        closeAllModals();
+        menu.style.display = 'block';
+        overlay.style.display = 'block';
+        // mark selected
+        menu.querySelectorAll('.lang-opt').forEach(o => {
+          o.classList.toggle('selected', o.onclick.toString().includes("'" + curLang + "'"));
+        });
+      }
+    }
+
+    function closeAllModals() {
+      document.getElementById('lang-menu').style.display = 'none';
+      document.getElementById('user-id-modal').style.display = 'none';
+      document.getElementById('cfg-modal').style.display = 'none';
+      document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    function selectLang(lang) {
+      curLang = lang;
+      localStorage.setItem('ghost_lang', lang);
+      closeAllModals();
+      applyLang();
+      showToast('Language', '→ ' + LANG_LABELS[lang]);
+    }
+
+    // Auto-apply on load
+    window.addEventListener('load', applyLang);
+    // close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAllModals();
+      if (e.key === 'Enter' && document.getElementById('user-id-modal').style.display === 'block') submitUserId();
+    });
+    // close on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#lang-menu') &&
+        !e.target.closest('#lang-btn') &&
+        !e.target.closest('#user-id-modal') &&
+        !e.target.closest('#cfg-modal') &&
+        !e.target.closest('button[onclick*="openCfgImport"]')) {
+        closeAllModals();
+      }
+    });
+
+    /* ══ SIDEBAR ══ */
+    let sbOpen = true;
+    function toggleSB() {
+      sbOpen = !sbOpen;
+      document.getElementById('sidebar').classList.toggle('col', !sbOpen);
+    }
+
+    /* ══ NAVIGATION ══ */
+    function goPage(id, el) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      el.classList.add('active');
+      curPageId = id;
+      document.getElementById('bc-page').textContent = T(id === 'game' ? 'game_settings' : (id === 'magnet' ? 'magnet_trigger' : id));
+      document.getElementById('right-panel').style.display = (id === 'aimbot' || id === 'magnet') ? '' : 'none';
+      showToast('Nav', '→ ' + T(id === 'game' ? 'game_settings' : (id === 'magnet' ? 'magnet_trigger' : id)));
+    }
+
+    /* ══ SLIDER ══ */
+    function updateFill(el) {
+      const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+      el.style.background = `linear-gradient(to right,var(--accent) ${pct}%,var(--bg3) ${pct}%)`;
+    }
+    function sv(id, val) {
+      const e = document.getElementById(id);
+      if (e) e.textContent = val;
+
+      // Update status colors/text if it's the aimbot status
+      if (id === 'stat-aim') {
+        const isAimbotOn = document.getElementById('aim-en')?.checked;
+        e.textContent = isAimbotOn ? T('active') : T('inactive') || 'Devre dışı';
+        e.className = 'sval ' + (isAimbotOn ? 'gr' : 'rd');
+      }
+
+      if (typeof updateBackend === 'function') updateBackend();
+    }
+    document.querySelectorAll('input[type=range]').forEach(s => updateFill(s));
+
+    /* ══ FOV CANVAS ══ */
+    function drawFov(r) {
+      const c = document.getElementById('fovCanvas');
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height, cx = w / 2, cy = h / 2;
+      const maxR = Math.min(w, h) / 2 - 4;
+      const rad = Math.min((r / 300) * maxR, maxR);
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.lineWidth = 1;
+      for (let i = 0; i < w; i += 14) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, h); ctx.stroke(); }
+      for (let i = 0; i < h; i += 14) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(w, i); ctx.stroke(); }
+      const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#7c5cfc';
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+      g.addColorStop(0, ac + '33'); g.addColorStop(1, ac + '06');
+      ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.strokeStyle = ac + 'cc'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.strokeStyle = ac + '55'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx - 6, cy); ctx.lineTo(cx + 6, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx, cy - 6); ctx.lineTo(cx, cy + 6); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx, cy, 2.5, 0, Math.PI * 2); ctx.fillStyle = ac; ctx.fill();
+      ctx.fillStyle = 'rgba(107,107,122,.5)'; ctx.font = '9px DM Mono,monospace'; ctx.fillText('Actual Size', w - 56, 12);
+    }
+    drawFov(100);
+
+    /* ══ COLOR WHEEL ══ */
+    let cwHue = 270, cwSat = 0.7, cwBright = 0.85;
+    function drawWheel() {
+      const canvas = document.getElementById('cwCanvas');
+      const ctx = canvas.getContext('2d');
+      const cx = 90, cy = 90, r = 88;
+      ctx.clearRect(0, 0, 180, 180);
+      for (let a = 0; a < 360; a++) {
+        const s = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+        s.addColorStop(0, 'rgba(255,255,255,1)');
+        s.addColorStop(1, 'hsl(' + a + ',100%,50%)');
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, (a - 1) * Math.PI / 180, (a + 1) * Math.PI / 180);
+        ctx.fillStyle = s; ctx.fill();
+      }
+      // darken overlay
+      const dark = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      dark.addColorStop(0, 'rgba(0,0,0,0)');
+      dark.addColorStop(1, 'rgba(0,0,0,' + (1 - cwBright) + ')');
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = dark; ctx.fill();
+    }
+    function cwHslToHex(h, s, l) {
+      s /= 100; l /= 100;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => { const k = (n + h / 30) % 12; const c = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1); return Math.round(255 * c).toString(16).padStart(2, '0'); };
+      return '#' + f(0) + f(8) + f(4);
+    }
+    function getWheelColor(h, s, brt) {
+      const l = brt * 100 * (1 - s * 0.5);
+      const sl = s === 0 ? 0 : (brt * 100 - l) / Math.min(l, 100 - l) * 100;
+      return cwHslToHex(h, Math.min(sl, 100), l);
+    }
+    function applyWheelColor() {
+      const hex = getWheelColor(cwHue, cwSat, cwBright);
+      applyAccent(hex);
+      document.getElementById('cw-hex').value = hex.toUpperCase();
+      document.getElementById('cw-swatch').style.background = hex;
+      drawWheel();
+      placeCursor();
+    }
+    function placeCursor() {
+      const r = 88, cx = 90, cy = 90;
+      const a = cwHue * Math.PI / 180;
+      const d = cwSat * r;
+      const x = cx + d * Math.cos(a);
+      const y = cy + d * Math.sin(a);
+      const cur = document.getElementById('cw-cursor');
+      cur.style.left = x + 'px';
+      cur.style.top = y + 'px';
+    }
+    function setupWheel() {
+      drawWheel(); placeCursor();
+      const ring = document.getElementById('cw-ring');
+      let dragging = false;
+      function pick(e) {
+        const rect = ring.getBoundingClientRect();
+        const cx2 = rect.width / 2, cy2 = rect.height / 2;
+        const mx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left - cx2;
+        const my = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top - cy2;
+        const dist = Math.sqrt(mx * mx + my * my);
+        const r = rect.width / 2;
+        cwHue = ((Math.atan2(my, mx) * 180 / Math.PI) + 360) % 360;
+        cwSat = Math.min(dist / r, 1);
+        applyWheelColor();
+      }
+      ring.addEventListener('mousedown', e => { dragging = true; pick(e); });
+      window.addEventListener('mousemove', e => { if (dragging) pick(e); });
+      window.addEventListener('mouseup', () => dragging = false);
+      ring.addEventListener('touchstart', e => { pick(e); e.preventDefault(); }, { passive: false });
+      ring.addEventListener('touchmove', e => { pick(e); e.preventDefault(); }, { passive: false });
+      document.getElementById('cw-bright').addEventListener('input', () => { cwBright = document.getElementById('cw-bright').value / 100; drawWheel(); applyWheelColor(); });
+      updateFill(document.getElementById('cw-bright'));
+    }
+    function onHexInput(v) {
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) { applyAccent(v); document.getElementById('cw-swatch').style.background = v; }
+    }
+
+    /* ══ ACCENT APPLY ══ */
+    function hexToRgb(h) { return { r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16) }; }
+    function applyAccent(hex) {
+      const { r, g, b } = hexToRgb(hex);
+      const root = document.documentElement;
+      root.style.setProperty('--accent', hex);
+      root.style.setProperty('--ar', r); root.style.setProperty('--ag', g); root.style.setProperty('--ab', b);
+      root.style.setProperty('--accent-dim', `rgba(${r},${g},${b},.15)`);
+      root.style.setProperty('--accent-glow', `0 0 18px rgba(${r},${g},${b},.4)`);
+      document.querySelectorAll('input[type=range]').forEach(s => updateFill(s));
+      drawFov(parseInt(document.getElementById('v-fov').textContent) || 100);
+      showToast('Menu Color', '→ ' + hex.toUpperCase());
+    }
+
+    /* ══ ENEMY COLOR ══ */
+    let colorModeValue = 0; // Default to purple
+
+    function setEC(group, el, hex) {
+      document.querySelectorAll('#ec-' + group + ' .ec-dot').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      if (group === 'enemy') {
+        document.getElementById('ec-preview').style.background = hex;
+        document.getElementById('ec-hex').textContent = hex.toUpperCase();
+
+        if (hex === '#a855f7') colorModeValue = 0;
+        else if (hex === '#fbbf24') colorModeValue = 2;
+        else if (hex === '#ef4444') colorModeValue = 3;
+
+        if (typeof updateBackend === 'function') updateBackend();
+      }
+      showToast(group === 'enemy' ? T('enemy_color') : T('team_color'), '→ ' + hex.toUpperCase());
+    }
+
+    /* ══ KEYBIND ══ */
+    const MBTN = { 0: 'LMB', 1: 'MMB', 2: 'RMB', 3: 'MOUSE4', 4: 'MOUSE5', 5: 'MOUSE6', 6: 'MOUSE7', 7: 'MOUSE8', 8: 'MOUSE9' };
+    const KMAP = { ' ': 'SPACE', 'Control': 'CTRL', 'Shift': 'SHIFT', 'Alt': 'ALT', 'ArrowUp': '↑', 'ArrowDown': '↓', 'ArrowLeft': '←', 'ArrowRight': '→', 'PageUp': 'PAGE UP', 'PageDown': 'PAGE DN', 'Insert': 'INS', 'Delete': 'DEL', 'Home': 'HOME', 'End': 'END', 'Escape': 'ESC', 'Enter': 'ENTER', 'Backspace': 'BKSP', 'Tab': 'TAB' };
+    const VK_MAP = {
+      'LMB': 0x01, 'RMB': 0x02, 'MMB': 0x04, 'MOUSE4': 0x05, 'MOUSE5': 0x06,
+      'SPACE': 0x20, 'CTRL': 0x11, 'SHIFT': 0x10, 'ALT': 0x12, 'INS': 0x2D,
+      'DEL': 0x2E, 'HOME': 0x24, 'END': 0x23, 'ESC': 0x1B, 'ENTER': 0x0D, 'TAB': 0x09
+    };
+
+    const REVERSE_VK = {};
+    Object.keys(VK_MAP).forEach(k => { REVERSE_VK[VK_MAP[k]] = k; });
+
+    function getVK(str) {
+      if (VK_MAP[str]) return VK_MAP[str];
+      if (str && str.length === 1) return str.toUpperCase().charCodeAt(0);
+      return 0;
+    }
+
+    let activeKb = null, cleanFn = null;
+    function listenKey(btn, label) {
+      if (activeKb && activeKb !== btn) { activeKb.classList.remove('listening'); if (cleanFn) cleanFn(); }
+      activeKb = btn; btn.classList.add('listening'); btn.textContent = '...';
+
+      function onKey(e) { e.preventDefault(); const k = KMAP[e.key] || (e.key.length === 1 ? e.key.toUpperCase() : e.key.toUpperCase()); finish(k); }
+      function onMouse(e) {
+        if (e.button === 0 && e.target === btn) return;
+        e.preventDefault(); e.stopPropagation();
+        finish(MBTN[e.button] ?? ('MOUSE' + (e.button + 1)));
+      }
+
+      function finish(key) {
+        btn.textContent = key;
+        btn.classList.remove('listening');
+        activeKb = null;
+        cleanup();
+        showToast('Keybind', (label || 'Key') + ' → ' + key);
+        if (typeof updateBackend === 'function') updateBackend();
+      }
+
+      function cleanup() {
+        window.removeEventListener('keydown', onKey);
+        window.removeEventListener('mousedown', onMouse, true);
+      }
+      cleanFn = cleanup;
+      setTimeout(() => {
+        window.addEventListener('keydown', onKey);
+        window.addEventListener('mousedown', onMouse, true);
+      }, 200);
+    }
+
+    // GLOBAL: Prevent MOUSE4/MOUSE5 navigation across the entire page
+    window.addEventListener('mouseup', e => { if (e.button === 3 || e.button === 4) { e.preventDefault(); e.stopPropagation(); } }, true);
+    window.addEventListener('mousedown', e => { if (e.button === 3 || e.button === 4) { e.preventDefault(); e.stopPropagation(); } }, true);
+    window.addEventListener('click', e => { if (e.button === 3 || e.button === 4) { e.preventDefault(); e.stopPropagation(); } }, true);
+    window.addEventListener('auxclick', e => { if (e.button === 3 || e.button === 4) { e.preventDefault(); e.stopPropagation(); } }, true);
+
+    /* ══ MODE PILL ══ */
+    function setMode(btn, label, mode) {
+      btn.closest('.mode-pill').querySelectorAll('.mp-btn').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      showToast('Mode', label + ' → ' + mode);
+    }
+
+    /* ══ TOGGLE ══ */
+    function onTog(section, label, checked) {
+      showToast(section, label + ' → ' + (checked ? 'ON ✓' : 'OFF ✗'));
+      if (section === 'Aimbot' && label === 'Enable') sv('stat-aim', '');
+      if (typeof updateBackend === 'function') updateBackend();
+    }
+
+    /* ══ BEEP ══ */
+    let audioCtx = null;
+    function getAC() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+    function beep(freq, dur) {
+      try { const ctx = getAC(); const osc = ctx.createOscillator(); const g = ctx.createGain(); osc.connect(g); g.connect(ctx.destination); osc.type = 'sine'; osc.frequency.value = freq; g.gain.setValueAtTime(.15, ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + dur); osc.start(ctx.currentTime); osc.stop(ctx.currentTime + dur); } catch (e) { }
+    }
+    function beepAim(on) {
+      if (!document.getElementById('beep-tog')?.checked) return;
+      if (on) { beep(880, .08); setTimeout(() => beep(1100, .12), 90); }
+      else { beep(440, .12); setTimeout(() => beep(330, .1), 110); }
+    }
+
+    /* ══ BOTTOM-CENTER TOAST ══ */
+    function showToast(title, body) {
+      const box = document.getElementById('toast-box');
+      const item = document.createElement('div');
+      item.className = 'toast-item';
+      item.innerHTML = '<div class="tt">⚡ ' + title.toUpperCase() + '</div><div class="tb">' + body + '</div>';
+      box.appendChild(item);
+      while (box.children.length > 3) box.removeChild(box.firstChild);
+      setTimeout(() => { item.classList.add('out'); setTimeout(() => item.remove(), 230); }, 3200);
+    }
+    function saveToast() { showToast('✓ ' + T('save'), T('saved')); }
+
+    async function handleSave() {
+      saveToast();
+      try {
+        await fetch('/api/save', { method: 'POST' });
+      } catch (e) {
+        console.error("Failed to call save API:", e);
+      }
+    }
+
+    async function toggleScreenCaptureLog() {
+      try {
+        await fetch('/api/screen_capture_log', { method: 'POST' });
+        showToast('Log', 'Screen Capture Log Toggled');
+      } catch (e) {
+        console.error("Failed to call screen log API:", e);
+      }
+    }
+
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/load', {
+          method: 'POST'
+        });
+        if (res.ok) {
+          await fetchConfig();
+          showToast('Config', 'Ayarlar Dosyadan Yüklendi!');
+        }
+      } catch (e) {
+        console.error("Failed to load config from disk:", e);
+        showToast('Hata', 'Yükleme başarısız!');
+      }
+    }
+
+    /* ══ API INTEGRATION ══ */
+    const getNum = (idMatch, isFloat = false, div = 1) => {
+      const el = document.querySelector(`input[oninput*="${idMatch}"]`);
+      if (!el) return 0;
+      return isFloat ? parseFloat(el.value) / div : parseInt(el.value) / div;
+    }
+
+    async function fetchConfig() {
+      try {
+        const res = await fetch('/api/config');
+        const data = await res.json();
+
+        // Checkboxes
+        const aimEn = document.getElementById('aim-en'); if (aimEn) { aimEn.checked = data.aimbot_enabled; sv('stat-aim', ''); }
+        const trigEn = document.getElementById('trig-en'); if (trigEn) trigEn.checked = data.triggerbot_enabled;
+        const silentEn = document.getElementById('silent-en'); if (silentEn) silentEn.checked = data.silent_enabled;
+        const rcsEn = document.getElementById('rcs-en'); if (rcsEn) rcsEn.checked = !!data.recoil_enabled;
+        const cmdTog = document.getElementById('cmd-tog'); if (cmdTog) cmdTog.checked = data.hide_cmd;
+        const flickerEn = document.getElementById('flick-en'); if (flickerEn) flickerEn.checked = data.flicker_enabled;
+        const sclEn = document.getElementById('scl-en'); if (sclEn) sclEn.checked = data.screen_capture_log_enabled;
+        const obsEn = document.getElementById('obs-en'); if (obsEn) obsEn.checked = data.stream_proof;
+
+        // Sliders Helper
+        const setSlider = (idValue, idText, val, format) => {
+          const el = document.querySelector(`input[oninput*="${idValue}"]`);
+          if (el) {
+            el.value = val;
+            updateFill(el);
+            if (format) sv(idValue, format(val), true);
+            else sv(idValue, val, true);
+          }
+        };
+
+        setSlider('v-fov', 'stat-fov', data.aimbot_fov, v => v + 'px');
+        drawFov(+data.aimbot_fov);
+
+        setSlider('v-sm', 'stat-sm', data.aimbot_smooth * 100, v => (v / 100).toFixed(2));
+        setSlider('v-sp', 'stat-speed', data.speed, null);
+        setSlider('v-dist', 'stat-dist', data.distance, v => v);
+
+        // RCS Sync
+        setSlider('v-rcs-len', '', data.recoil_length, v => v + 'px');
+        setSlider('v-rcs-sp', '', data.recoil_speed * 100, v => (v / 100).toFixed(2));
+
+        setSlider('v-trig-x', 'stat-trig-x', data.triggerbot_fovX, v => v + 'px');
+        setSlider('v-trig-y', 'stat-trig-y', data.triggerbot_fovY, v => v + 'px');
+        setSlider('v-td', 'stat-trig-dl', data.triggerbot_delay, v => v + 'ms');
+        setSlider('v-tr', 'stat-trig-tr', data.triggerbot_random_delay, v => '±' + v + 'ms');
+
+        if (data.bone) {
+          const bsel = document.getElementById('bone-select');
+          if (bsel) bsel.value = data.bone;
+          const brp = document.getElementById('bone-select-rp');
+          if (brp) brp.value = data.bone;
+        }
+
+        if (data.aimkey) {
+          const keyBtn = document.getElementById('ak-aim');
+          if (keyBtn) keyBtn.textContent = REVERSE_VK[data.aimkey] || String.fromCharCode(data.aimkey);
+        }
+
+        if (data.triggerbot_key) {
+          const keyBtn2 = document.getElementById('ak-trig');
+          if (keyBtn2) keyBtn2.textContent = REVERSE_VK[data.triggerbot_key] || String.fromCharCode(data.triggerbot_key);
+        }
+
+        if (data.magnet_key) {
+          const keyBtnMag = document.getElementById('ak-magnet');
+          if (keyBtnMag) keyBtnMag.textContent = REVERSE_VK[data.magnet_key] || String.fromCharCode(data.magnet_key);
+        }
+
+        // Initialize color
+        if (data.color_mode !== undefined) {
+          colorModeValue = data.color_mode;
+          let hex = '#a855f7';
+          if (data.color_mode == 2) hex = '#fbbf24';
+          else if (data.color_mode == 3) hex = '#ef4444';
+
+          document.querySelectorAll('#ec-enemy .ec-dot').forEach(el => {
+            if (el.style.background.includes(hex.substring(1))) el.click();
+          });
+        }
+
+        // Ensure UI mirrors current C++ memory states initially
+      } catch (e) {
+        console.error("Failed to fetch initial config from C++ backend:", e);
+      }
+    }
+
+    async function updateBackend() {
+      const payload = {
+        aimbot_enabled: document.getElementById('aim-en')?.checked || false,
+        triggerbot_enabled: document.getElementById('trig-en')?.checked || false,
+        silent_enabled: document.getElementById('silent-en')?.checked || false,
+        recoil_enabled: document.getElementById('rcs-en')?.checked || false,
+        flicker_enabled: document.getElementById('flick-en')?.checked || false,
+        screen_capture_log_enabled: document.getElementById('scl-en')?.checked || false,
+        stream_proof: document.getElementById('obs-en')?.checked || false,
+
+        aimbot_fov: getNum('v-fov'),
+        aimbot_smooth: getNum('v-sm', true, 100),
+        speed: getNum('v-sp'),
+        distance: getNum('v-dist', true, 1),
+
+        triggerbot_fovX: getNum('v-trig-x'),
+        triggerbot_fovY: getNum('v-trig-y'),
+        triggerbot_delay: getNum('v-td'),
+        triggerbot_random_delay: getNum('v-tr'),
+        hide_cmd: document.getElementById('cmd-tog')?.checked || false,
+        color_mode: colorModeValue,
+        bone: document.getElementById('bone-select')?.value || 'Body',
+        aimkey: getVK(document.getElementById('ak-aim')?.textContent),
+        triggerbot_key: getVK(document.getElementById('ak-trig')?.textContent),
+        magnet_enabled: document.getElementById('magnet-en')?.checked || false,
+        magnet_key: getVK(document.getElementById('ak-magnet')?.textContent),
+        recoil_length: getNum('v-rcs-len'),
+        recoil_speed: getNum('v-rcs-sp', true, 100)
+      };
+
+      try {
+        await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) {
+        console.error("Failed to post config to C++ backend:", e);
+      }
+    }
+
+    /* ══ PA-CODE SYSTEM ══ */
+    let cfgStore = JSON.parse(localStorage.getItem('pa_cfg_store') || '{}');
+
+    function saveCfgStore() {
+      // Keep only last 50 configs to prevent storage bloat
+      const keys = Object.keys(cfgStore);
+      if (keys.length > 50) {
+        delete cfgStore[keys[0]];
+      }
+      localStorage.setItem('pa_cfg_store', JSON.stringify(cfgStore));
+    }
+
+    function generatePACode() {
+      // Exclude I, O, 1, 0 to avoid confusion
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+      return code;
+    }
+
+    function scramble(str) {
+      const key = 42;
+      let res = "";
+      for (let i = 0; i < str.length; i++) res += String.fromCharCode(str.charCodeAt(i) ^ key);
+      return btoa(res);
+    }
+
+    function unscramble(b64) {
+      const key = 42;
+      let str = atob(b64);
+      let res = "";
+      for (let i = 0; i < str.length; i++) res += String.fromCharCode(str.charCodeAt(i) ^ key);
+      return res;
+    }
+
+    function openCfgShare() {
+      const config = {
+        ae: document.getElementById('aim-en')?.checked,
+        re: document.getElementById('rcs-en')?.checked,
+        rl: parseInt(document.querySelector('input[oninput*="v-rcs-len"]')?.value) || 20,
+        rs: parseInt(document.querySelector('input[oninput*="v-rcs-sp"]')?.value) || 40,
+        f: parseInt(document.querySelector('input[oninput*="v-fov"]')?.value) || 100,
+        s: parseInt(document.querySelector('input[oninput*="v-sm"]')?.value) || 100,
+        sp: parseInt(document.querySelector('input[oninput*="v-sp"]')?.value) || 0,
+        b: document.getElementById('bone-select')?.value || 'Head',
+        ak: document.getElementById('ak-aim')?.textContent || 'MOUSE4',
+        te: document.getElementById('trig-en')?.checked,
+        tX: parseInt(document.querySelector('input[oninput*="v-trig-x"]')?.value) || 10,
+        tY: parseInt(document.querySelector('input[oninput*="v-trig-y"]')?.value) || 10,
+        tD: parseInt(document.querySelector('input[oninput*="v-td"]')?.value) || 0,
+        tR: parseInt(document.querySelector('input[oninput*="v-tr"]')?.value) || 0,
+        tk: document.getElementById('ak-trig')?.textContent || 'MOUSE5',
+        me: document.getElementById('magnet-en')?.checked,
+        mk: document.getElementById('ak-magnet')?.textContent || 'MOUSE4',
+        c: colorModeValue,
+        d: parseInt(document.querySelector('input[oninput*="v-dist"]')?.value) || 1,
+        hc: document.getElementById('cmd-tog')?.checked,
+        be: document.getElementById('beep-tog')?.checked,
+        sc: document.getElementById('scl-en')?.checked,
+        op: document.getElementById('obs-en')?.checked
+      };
+
+      const blob = scramble(JSON.stringify(config));
+      const code = generatePACode();
+      cfgStore[code] = blob;
+      saveCfgStore();
+
+      document.getElementById('display-pa-code').textContent = 'PA-' + code;
+      document.getElementById('inline-pa-container').style.display = 'block';
+
+      // Reset copy status
+      const copyStatus = document.getElementById('copy-status-pa');
+      if (copyStatus) copyStatus.textContent = 'Kopyalamak için tıkla';
+    }
+
+    function copyConfigCode() {
+      const code = document.getElementById('display-pa-code').textContent;
+      const textArea = document.createElement("textarea");
+      textArea.value = code;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        const status = document.getElementById('copy-status-pa');
+        if (status) {
+          status.textContent = 'PA-CODE KOPYALANDI! ✅';
+          status.style.color = '#22c55e';
+          setTimeout(() => {
+            status.textContent = 'Kopyalamak için tıkla';
+            status.style.color = 'var(--muted)';
+          }, 2000);
+        }
+        showToast('Config', 'Kod kopyalandı! 📋');
+      } catch (err) {
+        showToast('Hata', 'Kopyalanamadı!');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function openCfgImport() {
+      document.getElementById('pa-code-input').value = '';
+      document.getElementById('cfg-view-load').style.display = 'block';
+      document.getElementById('cfg-modal').style.display = 'block';
+      document.getElementById('modal-overlay').style.display = 'block';
+      document.getElementById('pa-code-input').focus();
+    }
+
+    async function applyConfigCode() {
+      const input = document.getElementById('pa-code-input').value.trim().toUpperCase();
+      const code = input.replace('PA-', '').replace('PA—', '').replace('PA ', '').trim();
+      const blob = cfgStore[code];
+
+      if (!blob) {
+        showToast('Hata', 'Kod bulunamadı veya süresi dolmuş!');
+        return;
+      }
+
+      try {
+        window.isImporting = true;
+        const config = JSON.parse(unscramble(blob));
+
+        const applySlider = (selector, val, extraId = null, extraSuff = "") => {
+          const el = document.querySelector(selector);
+          if (el && val !== undefined) {
+            el.value = val;
+            updateFill(el);
+            if (extraId) {
+              const disp = document.getElementById(extraId);
+              if (disp) disp.textContent = (extraId === 'v-sm' ? (val / 100).toFixed(2) : val) + extraSuff;
+            }
+          }
+        };
+
+        const applyCheck = (id, val) => {
+          const el = document.getElementById(id);
+          if (el && val !== undefined) el.checked = !!val;
+        };
+
+        // Restore All Fields
+        applyCheck('aim-en', config.ae);
+        applyCheck('rcs-en', config.re || false);
+        applySlider('input[oninput*="v-rcs-len"]', config.rl, 'v-rcs-len', 'px');
+        applySlider('input[oninput*="v-rcs-sp"]', config.rs, 'v-rcs-sp');
+
+        applySlider('input[oninput*="v-fov"]', config.f, 'v-fov', 'px');
+        applySlider('input[oninput*="v-sm"]', config.s, 'v-sm');
+        applySlider('input[oninput*="v-sp"]', config.sp, 'v-sp');
+
+        if (config.b) {
+          document.getElementById('bone-select').value = config.b;
+          document.getElementById('bone-select-rp').value = config.b;
+        }
+        if (config.ak) document.getElementById('ak-aim').textContent = config.ak;
+
+        applyCheck('trig-en', config.te);
+        applySlider('input[oninput*="v-trig-x"]', config.tX, 'v-trig-x', 'px');
+        applySlider('input[oninput*="v-trig-y"]', config.tY, 'v-trig-y', 'px');
+        applySlider('input[oninput*="v-td"]', config.tD, 'v-td', ' ms');
+        applySlider('input[oninput*="v-tr"]', config.tR, 'v-tr', ' ms');
+        if (config.tk) document.getElementById('ak-trig').textContent = config.tk;
+
+        applyCheck('magnet-en', config.me);
+        if (config.mk) document.getElementById('ak-magnet').textContent = config.mk;
+
+        if (config.c !== undefined) {
+          colorModeValue = config.c;
+          const hex = config.c == 0 ? '#a855f7' : (config.c == 2 ? '#fbbf24' : '#ef4444');
+          document.querySelectorAll('#ec-enemy .ec-dot').forEach(el => {
+            const bg = el.style.background;
+            if (bg.includes('168, 85, 247') || bg.includes('a855f7')) el.classList.toggle('active', config.c == 0);
+            if (bg.includes('251, 191, 36') || bg.includes('fbbf24')) el.classList.toggle('active', config.c == 2);
+            if (bg.includes('239, 68, 68') || bg.includes('ef4444')) el.classList.toggle('active', config.c == 3);
+          });
+          document.getElementById('ec-preview').style.background = hex;
+          document.getElementById('ec-hex').textContent = hex.toUpperCase();
+        }
+
+        applySlider('input[oninput*="v-dist"]', config.d, 'v-dist');
+        applyCheck('cmd-tog', config.hc);
+        applyCheck('beep-tog', config.be);
+        applyCheck('scl-en', config.sc);
+        applyCheck('obs-en', config.op);
+
+        // Force visual refreshes
+        drawFov(config.f || 100);
+        sv('stat-aim', '');
+        sv('stat-fov', (config.f || 100) + 'px');
+        sv('stat-sm', ((config.s || 100) / 100).toFixed(2));
+
+        window.isImporting = false;
+        await updateBackend();
+        showToast('Config', 'PA-' + code + ' başarıyla uygulandı! ✅');
+        closeAllModals();
+      } catch (e) {
+        window.isImporting = false;
+        showToast('Hata', 'Kod işlenemedi!');
+        console.error(e);
+      }
+    }
+
+    /* ══ INIT ══ */
+    setupWheel();
+    applyLang();
+    fetchConfig();
+  </script>
+</body>
+
+</html>
