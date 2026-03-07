@@ -1571,7 +1571,7 @@
   <div class="main">
     <div class="topbar">
       <div class="bc">
-        <span style="color:var(--muted)">GhostTrigger</span>
+        <span style="color:var(--muted)">PIXEL</span>
         <span style="color:var(--muted2);margin:0 2px">›</span>
         <span class="cur" id="bc-page">Aimbot</span>
       </div>
@@ -1623,20 +1623,38 @@
 
             <div class="sl-group">
               <div class="sl-top">
-                <span class="sl-lbl">RCS Gücü (Offset)</span>
-                <span class="sl-num" id="v-rcs-len">80px</span>
+                <span class="sl-lbl">RCS Steps</span>
+                <span class="sl-num" id="v-rcs-len">1</span>
               </div>
-              <input type="range" min="1" max="1000" value="80" id="rcs-len-input"
-                oninput="sv('v-rcs-len',this.value+'px');updateFill(this);showToast('RCS Power','→ '+this.value+'px')">
+              <input type="range" min="1" max="100" value="1" id="rcs-len-input"
+                oninput="sv('v-rcs-len',this.value);updateFill(this);showToast('RCS Steps','→ '+this.value)">
             </div>
 
             <div class="sl-group">
               <div class="sl-top">
-                <span class="sl-lbl">RCS Hızı (Hız)</span>
-                <span class="sl-num" id="v-rcs-sp">0.40</span>
+                <span class="sl-lbl">RCS Speed</span>
+                <span class="sl-num" id="v-rcs-sp">0.055</span>
               </div>
-              <input type="range" min="1" max="1000" value="40" id="rcs-sp-input"
-                oninput="sv('v-rcs-sp',(this.value/100).toFixed(2));updateFill(this);showToast('RCS Speed','→ '+(this.value/100).toFixed(2))">
+              <input type="range" min="1" max="1000" value="55" id="rcs-sp-input"
+                oninput="sv('v-rcs-sp',(this.value/1000).toFixed(3));updateFill(this);showToast('RCS Speed','→ '+(this.value/1000).toFixed(3))">
+            </div>
+
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl">RCS Delay</span>
+                <span class="sl-num" id="v-rcs-dl">155</span>
+              </div>
+              <input type="range" min="0" max="1000" value="155" id="rcs-dl-input"
+                oninput="sv('v-rcs-dl',this.value);updateFill(this);showToast('RCS Delay','→ '+this.value)">
+            </div>
+
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl">RCS Sleep</span>
+                <span class="sl-num" id="v-rcs-sl">1</span>
+              </div>
+              <input type="range" min="1" max="100" value="1" id="rcs-sl-input"
+                oninput="sv('v-rcs-sl',this.value);updateFill(this);showToast('RCS Sleep','→ '+this.value)">
             </div>
           </div>
         </div>
@@ -1808,6 +1826,7 @@
           </div>
         </div>
 
+        <!-- Triggerbot Keybinds — latency REMOVED -->
         <div class="section">
           <div class="section-head">
             <svg viewBox="0 0 24 24" stroke-width="1.6">
@@ -3032,8 +3051,10 @@
         setSlider('v-dist', 'stat-dist', data.distance, v => v);
 
         // RCS Sync
-        setSlider('v-rcs-len', '', data.recoil_length, v => v + 'px');
-        setSlider('v-rcs-sp', '', data.recoil_speed * 100, v => (v / 100).toFixed(2));
+        setSlider('v-rcs-len', '', data.recoil_length, v => v);
+        setSlider('v-rcs-sp', '', data.recoil_speed * 1000, v => (v / 1000).toFixed(3));
+        setSlider('v-rcs-dl', '', data.time_to_start, v => v);
+        setSlider('v-rcs-sl', '', data.recoil_sleep, v => v);
 
         setSlider('v-trig-x', 'stat-trig-x', data.triggerbot_fovX, v => v + 'px');
         setSlider('v-trig-y', 'stat-trig-y', data.triggerbot_fovY, v => v + 'px');
@@ -3107,7 +3128,9 @@
         magnet_enabled: document.getElementById('magnet-en')?.checked || false,
         magnet_key: getVK(document.getElementById('ak-magnet')?.textContent),
         recoil_length: getNum('v-rcs-len'),
-        recoil_speed: getNum('v-rcs-sp', true, 100)
+        recoil_speed: getNum('v-rcs-sp', true, 1000),
+        time_to_start: getNum('v-rcs-dl'),
+        recoil_sleep: getNum('v-rcs-sl')
       };
 
       try {
