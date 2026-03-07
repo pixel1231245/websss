@@ -1808,7 +1808,27 @@
           </div>
         </div>
 
-        <!-- Triggerbot Keybinds — latency REMOVED -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v8M8 12h8" />
+            </svg>
+            <span class="sh-title" data-i18n="trigger_offsets">Tetik Ofsetleri (X-Y)</span>
+          </div>
+          <div class="section-body">
+            <div class="sl-group">
+              <div class="sl-top"><span class="sl-lbl">X Ofset</span><span class="sl-num" id="v-trig-offx">0 px</span></div>
+              <input type="range" min="-100" max="100" value="0"
+                oninput="sv('v-trig-offx',this.value+' px');updateFill(this);showToast('TB Offset X','→ '+this.value+' px')">
+            </div>
+            <div class="sl-group">
+              <div class="sl-top"><span class="sl-lbl">Y Ofset</span><span class="sl-num" id="v-trig-offy">0 px</span></div>
+              <input type="range" min="-100" max="100" value="0"
+                oninput="sv('v-trig-offy',this.value+' px');updateFill(this);showToast('TB Offset Y','→ '+this.value+' px')">
+            </div>
+          </div>
+        </div>
         <div class="section">
           <div class="section-head">
             <svg viewBox="0 0 24 24" stroke-width="1.6">
@@ -3038,6 +3058,8 @@
 
         setSlider('v-trig-x', 'stat-trig-x', data.triggerbot_fovX, v => v + 'px');
         setSlider('v-trig-y', 'stat-trig-y', data.triggerbot_fovY, v => v + 'px');
+        setSlider('v-trig-offx', '', data.triggerbot_offset_x, v => v + ' px');
+        setSlider('v-trig-offy', '', data.triggerbot_offset_y, v => v + ' px');
         setSlider('v-td', 'stat-trig-dl', data.triggerbot_delay, v => v + 'ms');
         setSlider('v-tr', 'stat-trig-tr', data.triggerbot_random_delay, v => '±' + v + 'ms');
 
@@ -3098,6 +3120,8 @@
 
         triggerbot_fovX: getNum('v-trig-x'),
         triggerbot_fovY: getNum('v-trig-y'),
+        triggerbot_offset_x: getNum('v-trig-offx'),
+        triggerbot_offset_y: getNum('v-trig-offy'),
         triggerbot_delay: getNum('v-td'),
         triggerbot_random_delay: getNum('v-tr'),
         hide_cmd: document.getElementById('cmd-tog')?.checked || false,
