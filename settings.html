@@ -1571,7 +1571,7 @@
   <div class="main">
     <div class="topbar">
       <div class="bc">
-        <span style="color:var(--muted)">GhostTrigger</span>
+        <span style="color:var(--muted)">PixelAim</span>
         <span style="color:var(--muted2);margin:0 2px">›</span>
         <span class="cur" id="bc-page">Aimbot</span>
       </div>
@@ -1607,6 +1607,16 @@
               </div>
               <label class="tog"><input type="checkbox" id="aim-en"
                   onchange="onTog('Aimbot','Enable',this.checked);beepAim(this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="draw_fov">Draw FOV</div>
+                <div class="trow-sub" data-i18n="Draw FOV">Ekranda nişan alma alanını (FOV) çiz</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="draw-fov" onchange="onTog('Aimbot','DrawFOV',this.checked)">
                 <div class="ttr"></div>
               </label>
             </div>
@@ -3024,6 +3034,7 @@
 
         // Checkboxes
         const aimEn = document.getElementById('aim-en'); if (aimEn) { aimEn.checked = data.aimbot_enabled; sv('stat-aim', ''); }
+        const drawFovEn = document.getElementById('draw-fov'); if (drawFovEn) drawFovEn.checked = data.draw_fov;
         const trigEn = document.getElementById('trig-en'); if (trigEn) trigEn.checked = data.triggerbot_enabled;
         const silentEn = document.getElementById('silent-en'); if (silentEn) silentEn.checked = data.silent_enabled;
         const rcsEn = document.getElementById('rcs-en'); if (rcsEn) rcsEn.checked = !!data.recoil_enabled;
@@ -3104,6 +3115,7 @@
     async function updateBackend() {
       const payload = {
         aimbot_enabled: document.getElementById('aim-en')?.checked || false,
+        draw_fov: document.getElementById('draw-fov')?.checked || false,
         triggerbot_enabled: document.getElementById('trig-en')?.checked || false,
         silent_enabled: document.getElementById('silent-en')?.checked || false,
         recoil_enabled: document.getElementById('rcs-en')?.checked || false,
