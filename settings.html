@@ -1489,14 +1489,6 @@
         <span class="nav-lbl" data-i18n="magnet_trigger">Magnet</span>
         <span class="nav-tip" data-i18n="magnet_trigger">Magnet</span>
       </div>
-      <div class="nav-item" onclick="goPage('game',this)">
-        <svg viewBox="0 0 24 24" stroke-width="1.6">
-          <rect x="2" y="6" width="20" height="12" rx="2" />
-          <path d="M12 12h.01M8 10v4M6 12h4M16 11h2M16 13h2" />
-        </svg>
-        <span class="nav-lbl" data-i18n="game_settings">Oyun Ayarları</span>
-        <span class="nav-tip" data-i18n="game_settings">Oyun Ayarları</span>
-      </div>
       <div class="sb-div"></div>
       <div class="sb-sec" data-i18n="system">Sistem</div>
       <div class="nav-item" onclick="goPage('settings',this)">
@@ -1825,8 +1817,11 @@
           </div>
           <div class="section-body">
             <div class="sl-group">
-              <div class="sl-top"><span class="sl-lbl" data-i18n="pixel_sens">Hassasiyet</span><span class="sl-num"
-                  id="v-ts">90</span></div>
+              <div class="sl-top"><span class="sl-lbl" data-i18n="pixel_sens">Sensitivity (pixel_sens)</span><span
+                  class="sl-num" id="v-ts">90</span></div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">
+                Düşük = Daha Hassas, Yüksek = Daha Seçici
+              </div>
               <input type="range" min="1" max="100" value="90" id="trig-sens"
                 oninput="sv('v-ts',this.value);updateFill(this);showToast('Trigger Sensitivity','→ '+this.value)">
             </div>
@@ -1940,13 +1935,6 @@
         </div>
       </div>
 
-      <!-- ══ GAME SETTINGS ══ -->
-      <div class="scroll-area page" id="page-game">
-        <div class="save-bar">
-          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
-          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
-        </div>
-      </div>
 
       <!-- ══ SETTINGS ══ -->
       <div class="scroll-area page" id="page-settings">
