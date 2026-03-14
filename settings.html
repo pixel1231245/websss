@@ -1807,29 +1807,6 @@
           </div>
         </div>
 
-        <div class="section">
-          <div class="section-head">
-            <svg viewBox="0 0 24 24" stroke-width="1.6">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-            <span class="sh-title" data-i18n="trigger_delay">Tetik Gecikmesi</span>
-          </div>
-          <div class="section-body">
-            <div class="sl-group">
-              <div class="sl-top"><span class="sl-lbl" data-i18n="delay">Gecikme</span><span class="sl-num" id="v-td">0
-                  ms</span></div>
-              <input type="range" min="0" max="500" value="0"
-                oninput="sv('v-td',this.value+' ms');updateFill(this);showToast('Trigger Delay','→ '+this.value+' ms')">
-            </div>
-            <div class="sl-group">
-              <div class="sl-top"><span class="sl-lbl" data-i18n="random_offset">Rastgele Offset ±</span><span
-                  class="sl-num" id="v-tr">±0ms</span></div>
-              <input type="range" min="0" max="100" value="0"
-                oninput="sv('v-tr','±'+this.value+'ms');updateFill(this);showToast('Random Offset','→ ±'+this.value+'ms')">
-            </div>
-          </div>
-        </div>
 
         <!-- Triggerbot Keybinds — latency REMOVED -->
         <div class="section">
