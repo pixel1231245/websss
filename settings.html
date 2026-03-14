@@ -1423,6 +1423,21 @@
       text-align: center;
       text-transform: uppercase;
     }
+
+    .ec-row {
+      transition: all 0.2s ease;
+    }
+
+    .ec-row:hover {
+      background: var(--bg3) !important;
+      border-color: var(--accent) !important;
+    }
+
+    .ec-row.active {
+      background: var(--accent-dim) !important;
+      border-color: var(--accent) !important;
+      box-shadow: var(--accent-glow);
+    }
   </style>
 </head>
 
@@ -1938,22 +1953,26 @@
             <span class="sh-title" data-i18n="enemy_color">Düşman Rengi</span>
           </div>
           <div class="section-body">
-            <div class="ec-grid" id="ec-enemy" style="grid-template-columns: repeat(4, 1fr);">
-              <div class="ec-item">
-                <div class="ec-dot active" style="background:#a855f7" onclick="setEC('enemy',this,'#a855f7', 0)"></div>
-                <div class="ec-lbl" data-i18n="c_purple">Mor</div>
+            <div class="ec-list" id="ec-enemy" style="display: flex; flex-direction: column; gap: 6px;">
+              <div class="ec-row active" onclick="setEC('enemy',this,'#a855f7', 0)"
+                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
+                <div class="ec-dot" style="background:#a855f7; width:12px; height:12px; border-radius: 50%;"></div>
+                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_purple">Mor</div>
               </div>
-              <div class="ec-item">
-                <div class="ec-dot" style="background:#5eead4" onclick="setEC('enemy',this,'#5eead4', 1)"></div>
-                <div class="ec-lbl" data-i18n="c_astra">Anti-Astra</div>
+              <div class="ec-row" onclick="setEC('enemy',this,'#5eead4', 1)"
+                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
+                <div class="ec-dot" style="background:#5eead4; width:12px; height:12px; border-radius: 50%;"></div>
+                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_astra">Anti-Astra</div>
               </div>
-              <div class="ec-item">
-                <div class="ec-dot" style="background:#fbbf24" onclick="setEC('enemy',this,'#fbbf24', 2)"></div>
-                <div class="ec-lbl" data-i18n="c_yellow">Sarı</div>
+              <div class="ec-row" onclick="setEC('enemy',this,'#fbbf24', 2)"
+                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
+                <div class="ec-dot" style="background:#fbbf24; width:12px; height:12px; border-radius: 50%;"></div>
+                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_yellow">Sarı</div>
               </div>
-              <div class="ec-item">
-                <div class="ec-dot" style="background:#ef4444" onclick="setEC('enemy',this,'#ef4444', 3)"></div>
-                <div class="ec-lbl" data-i18n="c_red">Kırmızı</div>
+              <div class="ec-row" onclick="setEC('enemy',this,'#ef4444', 3)"
+                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
+                <div class="ec-dot" style="background:#ef4444; width:12px; height:12px; border-radius: 50%;"></div>
+                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_red">Kırmızı</div>
               </div>
             </div>
             <div
@@ -2866,7 +2885,7 @@
     let colorModeValue = 0; // Default to purple
 
     function setEC(group, el, hex, mode) {
-      document.querySelectorAll('#ec-' + group + ' .ec-dot').forEach(d => d.classList.remove('active'));
+      document.querySelectorAll('#ec-' + group + ' .ec-row').forEach(d => d.classList.remove('active'));
       el.classList.add('active');
       if (group === 'enemy') {
         document.getElementById('ec-preview').style.background = hex;
@@ -3083,8 +3102,9 @@
           if (data.color_mode == 2) hex = '#fbbf24';
           else if (data.color_mode == 3) hex = '#ef4444';
 
-          document.querySelectorAll('#ec-enemy .ec-dot').forEach(el => {
-            if (el.style.background.includes(hex.substring(1))) el.click();
+          document.querySelectorAll('#ec-enemy .ec-row').forEach(row => {
+            const dot = row.querySelector('.ec-dot');
+            if (dot && dot.style.background.includes(hex.substring(1))) row.click();
           });
         }
 
@@ -3304,11 +3324,13 @@
         if (config.c !== undefined) {
           colorModeValue = config.c;
           const hex = config.c == 0 ? '#a855f7' : (config.c == 2 ? '#fbbf24' : '#ef4444');
-          document.querySelectorAll('#ec-enemy .ec-dot').forEach(el => {
-            const bg = el.style.background;
-            if (bg.includes('168, 85, 247') || bg.includes('a855f7')) el.classList.toggle('active', config.c == 0);
-            if (bg.includes('251, 191, 36') || bg.includes('fbbf24')) el.classList.toggle('active', config.c == 2);
-            if (bg.includes('239, 68, 68') || bg.includes('ef4444')) el.classList.toggle('active', config.c == 3);
+          document.querySelectorAll('#ec-enemy .ec-row').forEach(row => {
+            const dot = row.querySelector('.ec-dot');
+            if (!dot) return;
+            const bg = dot.style.background;
+            if (bg.includes('168, 85, 247') || bg.includes('a855f7')) row.classList.toggle('active', config.c == 0);
+            if (bg.includes('251, 191, 36') || bg.includes('fbbf24')) row.classList.toggle('active', config.c == 2);
+            if (bg.includes('239, 68, 68') || bg.includes('ef4444')) row.classList.toggle('active', config.c == 3);
           });
           document.getElementById('ec-preview').style.background = hex;
           document.getElementById('ec-hex').textContent = hex.toUpperCase();
