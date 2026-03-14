@@ -1642,11 +1642,11 @@
 
             <div class="sl-group">
               <div class="sl-top">
-                <span class="sl-lbl">Flick Delay</span>
-                <span class="sl-num" id="v-rcs-fd">5</span>
+                <span class="sl-lbl">RCS Delay</span>
+                <span class="sl-num" id="v-rcs-dl">5</span>
               </div>
-              <input type="range" min="0" max="100" value="5" id="rcs-fd-input"
-                oninput="sv('v-rcs-fd',this.value);updateFill(this);showToast('Flick Delay','→ '+this.value)">
+              <input type="range" min="0" max="100" value="5" id="rcs-dl-input"
+                oninput="sv('v-rcs-dl',this.value);updateFill(this);showToast('RCS Delay','→ '+this.value)">
             </div>
           </div>
         </div>
@@ -1938,17 +1938,21 @@
             <span class="sh-title" data-i18n="enemy_color">Düşman Rengi</span>
           </div>
           <div class="section-body">
-            <div class="ec-grid-3" id="ec-enemy">
+            <div class="ec-grid" id="ec-enemy" style="grid-template-columns: repeat(4, 1fr);">
               <div class="ec-item">
-                <div class="ec-dot active" style="background:#a855f7" onclick="setEC('enemy',this,'#a855f7')"></div>
+                <div class="ec-dot active" style="background:#a855f7" onclick="setEC('enemy',this,'#a855f7', 0)"></div>
                 <div class="ec-lbl" data-i18n="c_purple">Mor</div>
               </div>
               <div class="ec-item">
-                <div class="ec-dot" style="background:#fbbf24" onclick="setEC('enemy',this,'#fbbf24')"></div>
+                <div class="ec-dot" style="background:#5eead4" onclick="setEC('enemy',this,'#5eead4', 1)"></div>
+                <div class="ec-lbl" data-i18n="c_astra">Anti-Astra</div>
+              </div>
+              <div class="ec-item">
+                <div class="ec-dot" style="background:#fbbf24" onclick="setEC('enemy',this,'#fbbf24', 2)"></div>
                 <div class="ec-lbl" data-i18n="c_yellow">Sarı</div>
               </div>
               <div class="ec-item">
-                <div class="ec-dot" style="background:#ef4444" onclick="setEC('enemy',this,'#ef4444')"></div>
+                <div class="ec-dot" style="background:#ef4444" onclick="setEC('enemy',this,'#ef4444', 3)"></div>
                 <div class="ec-lbl" data-i18n="c_red">Kırmızı</div>
               </div>
             </div>
@@ -2235,6 +2239,7 @@
         auto_detect: 'Otomatik Algıla', fov_preview: 'FOV Önizleme', status: 'Durum', active: 'Aktif', inactive: 'Pasif',
         saved: 'Ayarlar kaydedildi',
         c_red: 'Kırmızı', c_orange: 'Turuncu', c_yellow: 'Sarı', c_green: 'Yeşil', c_cyan: 'Cian', c_blue: 'Mavi', c_purple: 'Mor', c_white: 'Beyaz',
+        c_astra: 'Anti-Astra', color_profile: 'Renk Profili',
         magnet_trigger: 'Magnet', enable_magnet: "Magnet'ı Etkinleştir", enable_magnet_sub: "Aimbot ve Trigger'ı aynı tuşta birleştirir",
         magnet_hint: 'Bu mod aktifken seçili tuşa bastığınızda hem nişan alır hem ateş eder (Key Hold).', magnet_key: 'Magnet Tuşu'
       },
@@ -2264,6 +2269,7 @@
         auto_detect: 'Auto Detect', fov_preview: 'FOV Preview', status: 'Status', active: 'Active', inactive: 'Inactive',
         saved: 'Settings saved',
         c_red: 'Red', c_orange: 'Orange', c_yellow: 'Yellow', c_green: 'Green', c_cyan: 'Cyan', c_blue: 'Blue', c_purple: 'Purple', c_white: 'White',
+        c_astra: 'Anti-Astra', color_profile: 'Color Profile',
         magnet_trigger: 'Magnet', enable_magnet: 'Enable Magnet', enable_magnet_sub: 'Combines Aimbot and Trigger on one key',
         magnet_hint: 'When active, holding the selected key will both aim and shoot.', magnet_key: 'Magnet Key'
       },
@@ -2859,17 +2865,13 @@
     /* ══ ENEMY COLOR ══ */
     let colorModeValue = 0; // Default to purple
 
-    function setEC(group, el, hex) {
+    function setEC(group, el, hex, mode) {
       document.querySelectorAll('#ec-' + group + ' .ec-dot').forEach(d => d.classList.remove('active'));
       el.classList.add('active');
       if (group === 'enemy') {
         document.getElementById('ec-preview').style.background = hex;
         document.getElementById('ec-hex').textContent = hex.toUpperCase();
-
-        if (hex === '#a855f7') colorModeValue = 0;
-        else if (hex === '#fbbf24') colorModeValue = 2;
-        else if (hex === '#ef4444') colorModeValue = 3;
-
+        colorModeValue = mode;
         if (typeof updateBackend === 'function') updateBackend();
       }
       showToast(group === 'enemy' ? T('enemy_color') : T('team_color'), '→ ' + hex.toUpperCase());
@@ -3045,7 +3047,7 @@
 
         // RCS Sync
         setSlider('v-rcs-sp', '', data.recoil_speed, v => v);
-        setSlider('v-rcs-fd', '', data.recoil_flickdelay, v => v);
+        setSlider('v-rcs-dl', '', data.recoil_delay, v => v);
 
         setSlider('v-trig-x', 'stat-trig-x', data.triggerbot_fovX, v => v + 'px');
         setSlider('v-trig-y', 'stat-trig-y', data.triggerbot_fovY, v => v + 'px');
@@ -3120,7 +3122,8 @@
         magnet_enabled: document.getElementById('magnet-en')?.checked || false,
         magnet_key: getVK(document.getElementById('ak-magnet')?.textContent),
         recoil_speed: getNum('v-rcs-sp'),
-        recoil_flickdelay: getNum('v-rcs-fd')
+        recoil_delay: getNum('v-rcs-dl'),
+        color_mode: colorModeValue
       };
 
       try {
