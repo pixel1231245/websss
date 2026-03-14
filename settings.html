@@ -1825,10 +1825,10 @@
           </div>
           <div class="section-body">
             <div class="sl-group">
-              <div class="sl-top"><span class="sl-lbl" data-i18n="delay">Gecikme</span><span class="sl-num" id="v-td">0
-                  ms</span></div>
-              <input type="range" min="0" max="500" value="0"
-                oninput="sv('v-td',this.value+' ms');updateFill(this);showToast('Trigger Delay','→ '+this.value+' ms')">
+              <div class="sl-top"><span class="sl-lbl" data-i18n="pixel_sens">Hassasiyet</span><span class="sl-num"
+                  id="v-ts">90</span></div>
+              <input type="range" min="1" max="100" value="90" id="trig-sens"
+                oninput="sv('v-ts',this.value);updateFill(this);showToast('Trigger Sensitivity','→ '+this.value)">
             </div>
           </div>
         </div>
@@ -1942,53 +1942,6 @@
 
       <!-- ══ GAME SETTINGS ══ -->
       <div class="scroll-area page" id="page-game">
-
-        <!-- Enemy Color -->
-        <div class="section">
-          <div class="section-head">
-            <svg viewBox="0 0 24 24" stroke-width="1.6">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-            </svg>
-            <span class="sh-title" data-i18n="enemy_color">Düşman Rengi</span>
-          </div>
-          <div class="section-body">
-            <div class="ec-list" id="ec-enemy" style="display: flex; flex-direction: column; gap: 6px;">
-              <div class="ec-row active" onclick="setEC('enemy',this,'#a855f7', 0)"
-                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
-                <div class="ec-dot" style="background:#a855f7; width:12px; height:12px; border-radius: 50%;"></div>
-                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_purple">Mor</div>
-              </div>
-              <div class="ec-row" onclick="setEC('enemy',this,'#5eead4', 1)"
-                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
-                <div class="ec-dot" style="background:#5eead4; width:12px; height:12px; border-radius: 50%;"></div>
-                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_astra">Anti-Astra</div>
-              </div>
-              <div class="ec-row" onclick="setEC('enemy',this,'#fbbf24', 2)"
-                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
-                <div class="ec-dot" style="background:#fbbf24; width:12px; height:12px; border-radius: 50%;"></div>
-                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_yellow">Sarı</div>
-              </div>
-              <div class="ec-row" onclick="setEC('enemy',this,'#ef4444', 3)"
-                style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border-radius: 9px; cursor: pointer; border: 1px solid var(--border);">
-                <div class="ec-dot" style="background:#ef4444; width:12px; height:12px; border-radius: 50%;"></div>
-                <div class="ec-lbl" style="font-size: 14px; font-weight: 500;" data-i18n="c_red">Kırmızı</div>
-              </div>
-            </div>
-            <div
-              style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:12px 15px;">
-              <div id="ec-preview"
-                style="width:30px;height:30px;border-radius:7px;background:#a855f7;flex-shrink:0;border:2px solid rgba(255,255,255,.12);">
-              </div>
-              <div>
-                <div style="font-size:15px;font-weight:600;" data-i18n="selected_color">Seçili Renk</div>
-                <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);margin-top:2px;"
-                  id="ec-hex">#A855F7</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="save-bar">
           <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
           <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
@@ -2160,6 +2113,39 @@
 
       <!-- ══ RIGHT PANEL (aimbot only) ══ -->
       <div class="right-panel" id="right-panel">
+        <div>
+          <div class="rp-lbl" data-i18n="enemy_color">Düşman Rengi</div>
+          <div class="ec-list" id="ec-enemy"
+            style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
+            <div class="ec-row active" onclick="setEC('enemy',this,'#a855f7', 0)"
+              style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--bg2); border-radius: 7px; cursor: pointer; border: 1px solid var(--border);">
+              <div class="ec-dot" style="background:#a855f7; width:10px; height:10px; border-radius: 50%;"></div>
+              <div class="ec-lbl" style="font-size: 13px; font-weight: 500;" data-i18n="c_purple">Mor</div>
+            </div>
+            <div class="ec-row" onclick="setEC('enemy',this,'#5eead4', 1)"
+              style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--bg2); border-radius: 7px; cursor: pointer; border: 1px solid var(--border);">
+              <div class="ec-dot" style="background:#5eead4; width:10px; height:10px; border-radius: 50%;"></div>
+              <div class="ec-lbl" style="font-size: 13px; font-weight: 500;" data-i18n="c_astra">Anti-Astra</div>
+            </div>
+            <div class="ec-row" onclick="setEC('enemy',this,'#fbbf24', 2)"
+              style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--bg2); border-radius: 7px; cursor: pointer; border: 1px solid var(--border);">
+              <div class="ec-dot" style="background:#fbbf24; width:10px; height:10px; border-radius: 50%;"></div>
+              <div class="ec-lbl" style="font-size: 13px; font-weight: 500;" data-i18n="c_yellow">Sarı</div>
+            </div>
+            <div class="ec-row" onclick="setEC('enemy',this,'#ef4444', 3)"
+              style="display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--bg2); border-radius: 7px; cursor: pointer; border: 1px solid var(--border);">
+              <div class="ec-dot" style="background:#ef4444; width:10px; height:10px; border-radius: 50%;"></div>
+              <div class="ec-lbl" style="font-size: 13px; font-weight: 500;" data-i18n="c_red">Kırmızı</div>
+            </div>
+          </div>
+          <div
+            style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px 10px; margin-bottom: 15px;">
+            <div id="ec-preview"
+              style="width:24px;height:24px;border-radius:5px;background:#a855f7;flex-shrink:0;border:1px solid rgba(255,255,255,.1);">
+            </div>
+            <div id="ec-hex" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);">#A855F7</div>
+          </div>
+        </div>
         <div>
           <div class="rp-lbl" data-i18n="target_bone">Hedef Bölge</div>
           <select id="bone-select-rp"
@@ -3072,6 +3058,7 @@
         setSlider('v-trig-y', 'stat-trig-y', data.triggerbot_fovY, v => v + 'px');
         setSlider('v-td', 'stat-trig-dl', data.triggerbot_delay, v => v + 'ms');
         setSlider('v-tr', 'stat-trig-tr', data.triggerbot_random_delay, v => '±' + v + 'ms');
+        setSlider('v-ts', '', data.triggerbot_sens, null);
 
         if (data.bone) {
           const bsel = document.getElementById('bone-select');
@@ -3134,6 +3121,7 @@
         triggerbot_fovY: getNum('v-trig-y'),
         triggerbot_delay: getNum('v-td'),
         triggerbot_random_delay: getNum('v-tr'),
+        triggerbot_sens: getNum('v-ts'),
         hide_cmd: document.getElementById('cmd-tog')?.checked || false,
         color_mode: colorModeValue,
         bone: document.getElementById('bone-select')?.value || 'Body',
