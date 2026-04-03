@@ -1504,6 +1504,16 @@
         <span class="nav-lbl" data-i18n="magnet_trigger">Magnet</span>
         <span class="nav-tip" data-i18n="magnet_trigger">Magnet</span>
       </div>
+      <div class="nav-item" onclick="goPage('overlay',this)">
+        <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <line x1="12" y1="6" x2="12" y2="18"/>
+          <line x1="6" y1="12" x2="18" y2="12"/>
+          <circle cx="12" cy="12" r="4"/>
+        </svg>
+        <span class="nav-lbl" data-i18n="overlay">Overlay</span>
+        <span class="nav-tip" data-i18n="overlay">Overlay</span>
+      </div>
       <div class="sb-div"></div>
       <div class="sb-sec" data-i18n="system">Sistem</div>
       <div class="nav-item" onclick="goPage('settings',this)">
@@ -1629,16 +1639,6 @@
               </div>
               <label class="tog"><input type="checkbox" id="aim-en"
                   onchange="onTog('Aimbot','Enable',this.checked);beepAim(this.checked)">
-                <div class="ttr"></div>
-              </label>
-            </div>
-
-            <div class="trow">
-              <div class="trow-info">
-                <div class="trow-name" data-i18n="draw_fov">Draw FOV</div>
-                <div class="trow-sub" data-i18n="Draw FOV">Ekranda nişan alma alanını (FOV) çiz</div>
-              </div>
-              <label class="tog"><input type="checkbox" id="draw-fov" onchange="onTog('Aimbot','DrawFOV',this.checked)">
                 <div class="ttr"></div>
               </label>
             </div>
@@ -1832,6 +1832,139 @@
         </div>
       </div>
 
+
+      <!-- ══ OVERLAY ══ -->
+      <div class="scroll-area page" id="page-overlay">
+
+        <!-- Draw FOV -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h3m14 0h3M12 2v3m0 14v3"/>
+            </svg>
+            <span class="sh-title" data-i18n="draw_fov_title">Draw FOV</span>
+          </div>
+          <div class="section-body">
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="draw_fov">Draw FOV</div>
+                <div class="trow-sub" data-i18n="draw_fov_sub">Ekranda nişan alma alanını (FOV) beyaz çember olarak çiz</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="draw-fov" onchange="onTog('Overlay','DrawFOV',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="rgb_draw_fov">RGB Draw FOV</div>
+                <div class="trow-sub" data-i18n="rgb_draw_fov_sub">FOV çemberini rainbow RGB renk döngüsüyle çiz</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="draw-fov-rgb" onchange="onTog('Overlay','RGB FOV',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl" data-i18n="fov_thickness">FOV Çizgi Kalınlığı</span>
+                <span class="sl-num" id="v-fov-thick">2</span>
+              </div>
+              <input type="range" min="1" max="6" value="2" id="fov-thick-input"
+                oninput="sv('v-fov-thick',this.value);updateFill(this);showToast('FOV Thickness','→ '+this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Draw Crosshair -->
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
+              <line x1="12" y1="2" x2="12" y2="22"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+            </svg>
+            <span class="sh-title" data-i18n="draw_crosshair">Draw Crosshair</span>
+          </div>
+          <div class="section-body">
+            <div class="fg">
+              <label class="fg-lbl" data-i18n="ch_type_label">Crosshair Tipi</label>
+              <select id="ch-type-select" onchange="showToast('Crosshair','→ '+this.options[this.selectedIndex].text)">
+                <option value="0" data-i18n="ch_type_off">Kapalı</option>
+                <option value="1" data-i18n="ch_type_dot">Nokta (Dot)</option>
+                <option value="2" data-i18n="ch_type_cross">Artı (Cross)</option>
+                <option value="3" data-i18n="ch_type_circle_cross">Daire + Artı</option>
+              </select>
+            </div>
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="rgb_crosshair">RGB Crosshair</div>
+                <div class="trow-sub" data-i18n="rgb_crosshair_sub">Crosshair'i rainbow RGB renk döngüsüyle çiz</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="ch-rgb" onchange="onTog('Overlay','RGB Crosshair',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl" data-i18n="ov_ch_size">Boyut (Size)</span>
+                <span class="sl-num" id="v-ch-size">6</span>
+              </div>
+              <input type="range" min="1" max="30" value="6" id="ch-size-input"
+                oninput="sv('v-ch-size',this.value);updateFill(this);showToast('Crosshair Size','→ '+this.value+'px')">
+            </div>
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl" data-i18n="ov_ch_thickness">Kalınlık (Thickness)</span>
+                <span class="sl-num" id="v-ch-thick">2</span>
+              </div>
+              <input type="range" min="1" max="6" value="2" id="ch-thick-input"
+                oninput="sv('v-ch-thick',this.value);updateFill(this);showToast('Crosshair Thickness','→ '+this.value)">
+            </div>
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl" data-i18n="ov_ch_gap">Boşluk (Gap)</span>
+                <span class="sl-num" id="v-ch-gap">3</span>
+              </div>
+              <input type="range" min="0" max="20" value="3" id="ch-gap-input"
+                oninput="sv('v-ch-gap',this.value);updateFill(this);showToast('Crosshair Gap','→ '+this.value+'px')">
+            </div>
+            <div class="hint" id="ch-color-section">
+              <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+              </svg>
+              <span data-i18n="ch_color_hint">Crosshair Rengi (RGB kapalıyken):</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+              <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+                <label style="font-size:11px;color:var(--muted);font-weight:600;">R</label>
+                <input type="number" id="ch-color-r" min="0" max="255" value="0"
+                  style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
+                  oninput="updateChColorPreview()">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+                <label style="font-size:11px;color:var(--muted);font-weight:600;">G</label>
+                <input type="number" id="ch-color-g" min="0" max="255" value="255"
+                  style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
+                  oninput="updateChColorPreview()">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+                <label style="font-size:11px;color:var(--muted);font-weight:600;">B</label>
+                <input type="number" id="ch-color-b" min="0" max="255" value="0"
+                  style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
+                  oninput="updateChColorPreview()">
+              </div>
+              <div id="ch-color-preview"
+                style="width:42px;height:42px;min-width:42px;border-radius:8px;border:2px solid var(--border2);background:rgb(0,255,0);">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
+          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
+        </div>
+      </div>
 
       <!-- ══ SETTINGS ══ -->
       <div class="scroll-area page" id="page-settings">
@@ -2146,7 +2279,16 @@
         c_astra: 'Anti-Astra', color_profile: 'Renk Profili',
         magnet_trigger: 'Magnet', enable_magnet: "Magnet'ı Etkinleştir", enable_magnet_sub: "Aimbot ve Trigger'ı aynı tuşta birleştirir",
         magnet_hint: 'Bu mod aktifken seçili tuşa bastığınızda hem nişan alır hem ateş eder (Key Hold).', magnet_key: 'Magnet Tuşu',
-        sensitivity: 'Oyun İçi Hassasiyet'
+        sensitivity: 'Oyun İçi Hassasiyet',
+        overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
+        draw_fov_sub: 'Ekranda nişan alma alanını (FOV) beyaz çember olarak çiz',
+        rgb_draw_fov: 'RGB Draw FOV', rgb_draw_fov_sub: 'FOV çemberini rainbow RGB renk döngüsüyle çiz',
+        fov_thickness: 'FOV Çizgi Kalınlığı',
+        draw_crosshair: 'Draw Crosshair', ch_type_label: 'Crosshair Tipi',
+        ch_type_off: 'Kapalı', ch_type_dot: 'Nokta (Dot)', ch_type_cross: 'Artı (Cross)', ch_type_circle_cross: 'Daire + Artı',
+        rgb_crosshair: 'RGB Crosshair', rgb_crosshair_sub: "Crosshair'i rainbow RGB renk döngüsüyle çiz",
+        ov_ch_size: 'Boyut (Size)', ov_ch_thickness: 'Kalınlık (Thickness)', ov_ch_gap: 'Boşluk (Gap)',
+        ch_color_hint: 'Crosshair Rengi (RGB kapalıyken):'
       },
       en: {
         modules: 'Modules', system: 'System', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2177,7 +2319,16 @@
         c_astra: 'Anti-Astra', color_profile: 'Color Profile',
         magnet_trigger: 'Magnet', enable_magnet: 'Enable Magnet', enable_magnet_sub: 'Combines Aimbot and Trigger on one key',
         magnet_hint: 'When active, holding the selected key will both aim and shoot.', magnet_key: 'Magnet Key',
-        sensitivity: 'In-game Sensitivity'
+        sensitivity: 'In-game Sensitivity',
+        overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
+        draw_fov_sub: 'Draw the aiming area (FOV) as a white circle on screen',
+        rgb_draw_fov: 'RGB Draw FOV', rgb_draw_fov_sub: 'Draw FOV circle with rainbow RGB color cycling',
+        fov_thickness: 'FOV Line Thickness',
+        draw_crosshair: 'Draw Crosshair', ch_type_label: 'Crosshair Type',
+        ch_type_off: 'Off', ch_type_dot: 'Dot', ch_type_cross: 'Cross (+)', ch_type_circle_cross: 'Circle + Cross',
+        rgb_crosshair: 'RGB Crosshair', rgb_crosshair_sub: 'Draw crosshair with rainbow RGB color cycling',
+        ov_ch_size: 'Size', ov_ch_thickness: 'Thickness', ov_ch_gap: 'Gap',
+        ch_color_hint: 'Crosshair Color (when RGB is off):'
       },
       pt: {
         modules: 'Módulos', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2204,6 +2355,15 @@
         auto_detect: 'Deteção Auto', fov_preview: 'Pré-visualização FOV', status: 'Estado', active: 'Ativo', inactive: 'Inativo',
         reset: 'Repor', save: 'Guardar', saved: 'Definições guardadas',
         c_red: 'Vermelho', c_orange: 'Laranja', c_yellow: 'Amarelo', c_green: 'Verde', c_cyan: 'Ciano', c_blue: 'Azul', c_purple: 'Roxo', c_white: 'Branco',
+        overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
+        draw_fov_sub: 'Desenhar a área de mira (FOV) como um círculo branco no ecrã',
+        rgb_draw_fov: 'RGB Draw FOV', rgb_draw_fov_sub: 'Desenhar o círculo FOV com ciclo de cores RGB arco-íris',
+        fov_thickness: 'Espessura da Linha FOV',
+        draw_crosshair: 'Draw Crosshair', ch_type_label: 'Tipo de Mira',
+        ch_type_off: 'Desligado', ch_type_dot: 'Ponto', ch_type_cross: 'Cruz (+)', ch_type_circle_cross: 'Círculo + Cruz',
+        rgb_crosshair: 'RGB Crosshair', rgb_crosshair_sub: 'Desenhar mira com ciclo de cores RGB arco-íris',
+        ov_ch_size: 'Tamanho', ov_ch_thickness: 'Espessura', ov_ch_gap: 'Espaço',
+        ch_color_hint: 'Cor da Mira (quando RGB desligado):'
       },
       br: {
         modules: 'Módulos', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2230,6 +2390,15 @@
         auto_detect: 'Detecção Auto', fov_preview: 'Pré-visualização FOV', status: 'Status', active: 'Ativo', inactive: 'Inativo',
         reset: 'Resetar', save: 'Salvar', saved: 'Configurações salvas',
         c_red: 'Vermelho', c_orange: 'Laranja', c_yellow: 'Amarelo', c_green: 'Verde', c_cyan: 'Ciano', c_blue: 'Azul', c_purple: 'Roxo', c_white: 'Branco',
+        overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
+        draw_fov_sub: 'Desenhar a área de mira (FOV) como um círculo branco na tela',
+        rgb_draw_fov: 'RGB Draw FOV', rgb_draw_fov_sub: 'Desenhar o círculo FOV com ciclo de cores RGB arco-íris',
+        fov_thickness: 'Espessura da Linha FOV',
+        draw_crosshair: 'Draw Crosshair', ch_type_label: 'Tipo de Mira',
+        ch_type_off: 'Desligado', ch_type_dot: 'Ponto', ch_type_cross: 'Cruz (+)', ch_type_circle_cross: 'Círculo + Cruz',
+        rgb_crosshair: 'RGB Crosshair', rgb_crosshair_sub: 'Desenhar mira com ciclo de cores RGB arco-íris',
+        ov_ch_size: 'Tamanho', ov_ch_thickness: 'Espessura', ov_ch_gap: 'Espaço',
+        ch_color_hint: 'Cor da Mira (quando RGB desligado):'
       },
       de: {
         modules: 'Module', system: 'System', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2257,6 +2426,15 @@
         auto_detect: 'Auto-Erkennung', fov_preview: 'FOV-Vorschau', status: 'Status', active: 'Aktiv', inactive: 'Inaktiv',
         reset: 'Zurücksetzen', save: 'Speichern', saved: 'Einstellungen gespeichert',
         c_red: 'Rot', c_orange: 'Orange', c_yellow: 'Gelb', c_green: 'Grün', c_cyan: 'Türkis', c_blue: 'Blau', c_purple: 'Lila', c_white: 'Weiß',
+        overlay: 'Overlay', draw_fov_title: 'FOV zeichnen', draw_fov: 'FOV zeichnen',
+        draw_fov_sub: 'Zielbereich (FOV) als weißen Kreis auf dem Bildschirm zeichnen',
+        rgb_draw_fov: 'RGB FOV zeichnen', rgb_draw_fov_sub: 'FOV-Kreis mit Regenbogen-RGB-Farbzyklus zeichnen',
+        fov_thickness: 'FOV-Linienstärke',
+        draw_crosshair: 'Fadenkreuz zeichnen', ch_type_label: 'Fadenkreuz-Typ',
+        ch_type_off: 'Aus', ch_type_dot: 'Punkt', ch_type_cross: 'Kreuz (+)', ch_type_circle_cross: 'Kreis + Kreuz',
+        rgb_crosshair: 'RGB Fadenkreuz', rgb_crosshair_sub: 'Fadenkreuz mit Regenbogen-RGB-Farbzyklus zeichnen',
+        ov_ch_size: 'Größe', ov_ch_thickness: 'Stärke', ov_ch_gap: 'Abstand',
+        ch_color_hint: 'Fadenkreuz-Farbe (wenn RGB aus):'
       },
       fr: {
         modules: 'Modules', system: 'Système', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2284,6 +2462,15 @@
         auto_detect: 'Détection Auto', fov_preview: 'Aperçu FOV', status: 'Statut', active: 'Actif', inactive: 'Inactif',
         reset: 'Réinitialiser', save: 'Enregistrer', saved: 'Paramètres enregistrés',
         c_red: 'Rouge', c_orange: 'Orange', c_yellow: 'Jaune', c_green: 'Vert', c_cyan: 'Cyan', c_blue: 'Bleu', c_purple: 'Violet', c_white: 'Blanc',
+        overlay: 'Overlay', draw_fov_title: 'Dessiner FOV', draw_fov: 'Dessiner FOV',
+        draw_fov_sub: 'Dessiner la zone de visée (FOV) en cercle blanc à l\'écran',
+        rgb_draw_fov: 'FOV RGB', rgb_draw_fov_sub: 'Dessiner le cercle FOV avec un cycle de couleurs arc-en-ciel',
+        fov_thickness: 'Épaisseur de ligne FOV',
+        draw_crosshair: 'Dessiner Réticule', ch_type_label: 'Type de Réticule',
+        ch_type_off: 'Désactivé', ch_type_dot: 'Point', ch_type_cross: 'Croix (+)', ch_type_circle_cross: 'Cercle + Croix',
+        rgb_crosshair: 'Réticule RGB', rgb_crosshair_sub: 'Dessiner le réticule avec un cycle de couleurs arc-en-ciel',
+        ov_ch_size: 'Taille', ov_ch_thickness: 'Épaisseur', ov_ch_gap: 'Écart',
+        ch_color_hint: 'Couleur du Réticule (quand RGB désactivé) :'
       },
       es: {
         modules: 'Módulos', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2311,6 +2498,15 @@
         auto_detect: 'Detección Auto', fov_preview: 'Previsualización FOV', status: 'Estado', active: 'Activo', inactive: 'Inactivo',
         reset: 'Reiniciar', save: 'Guardar', saved: 'Ajustes guardados',
         c_red: 'Rojo', c_orange: 'Naranja', c_yellow: 'Amarillo', c_green: 'Verde', c_cyan: 'Cian', c_blue: 'Azul', c_purple: 'Púrpura', c_white: 'Blanco',
+        overlay: 'Overlay', draw_fov_title: 'Dibujar FOV', draw_fov: 'Dibujar FOV',
+        draw_fov_sub: 'Dibujar el área de apuntado (FOV) como un círculo blanco en pantalla',
+        rgb_draw_fov: 'FOV RGB', rgb_draw_fov_sub: 'Dibujar el círculo FOV con ciclo de colores arcoíris RGB',
+        fov_thickness: 'Grosor de Línea FOV',
+        draw_crosshair: 'Dibujar Mira', ch_type_label: 'Tipo de Mira',
+        ch_type_off: 'Desactivado', ch_type_dot: 'Punto', ch_type_cross: 'Cruz (+)', ch_type_circle_cross: 'Círculo + Cruz',
+        rgb_crosshair: 'Mira RGB', rgb_crosshair_sub: 'Dibujar la mira con ciclo de colores arcoíris RGB',
+        ov_ch_size: 'Tamaño', ov_ch_thickness: 'Grosor', ov_ch_gap: 'Espacio',
+        ch_color_hint: 'Color de Mira (cuando RGB desactivado):'
       },
       it: {
         modules: 'Moduli', system: 'Sistema', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2338,6 +2534,15 @@
         auto_detect: 'Rilevamento Auto', fov_preview: 'Anteprima FOV', status: 'Stato', active: 'Attivo', inactive: 'Inattivo',
         reset: 'Resetta', save: 'Salva', saved: 'Impostazioni salvate',
         c_red: 'Rosso', c_orange: 'Arancione', c_yellow: 'Giallo', c_green: 'Verde', c_cyan: 'Ciano', c_blue: 'Blu', c_purple: 'Viola', c_white: 'Bianco',
+        overlay: 'Overlay', draw_fov_title: 'Disegna FOV', draw_fov: 'Disegna FOV',
+        draw_fov_sub: 'Disegna l\'area di mira (FOV) come un cerchio bianco sullo schermo',
+        rgb_draw_fov: 'FOV RGB', rgb_draw_fov_sub: 'Disegna il cerchio FOV con ciclo di colori arcobaleno RGB',
+        fov_thickness: 'Spessore Linea FOV',
+        draw_crosshair: 'Disegna Mirino', ch_type_label: 'Tipo di Mirino',
+        ch_type_off: 'Disattivato', ch_type_dot: 'Punto', ch_type_cross: 'Croce (+)', ch_type_circle_cross: 'Cerchio + Croce',
+        rgb_crosshair: 'Mirino RGB', rgb_crosshair_sub: 'Disegna il mirino con ciclo di colori arcobaleno RGB',
+        ov_ch_size: 'Dimensione', ov_ch_thickness: 'Spessore', ov_ch_gap: 'Spazio',
+        ch_color_hint: 'Colore Mirino (quando RGB disattivato):'
       },
       ru: {
         modules: 'Модули', system: 'Система', aimbot: 'Аимбот', triggerbot: 'Триггербот',
@@ -2365,6 +2570,15 @@
         auto_detect: 'Авто-определение', fov_preview: 'Превью FOV', status: 'Статус', active: 'Активен', inactive: 'Неактивен',
         reset: 'Сброс', save: 'Сохранить', saved: 'Настройки сохранены',
         c_red: 'Красный', c_orange: 'Оранжевый', c_yellow: 'Желтый', c_green: 'Зеленый', c_cyan: 'Циан', c_blue: 'Синий', c_purple: 'Фиолетовый', c_white: 'Белый',
+        overlay: 'Оверлей', draw_fov_title: 'Отрисовка FOV', draw_fov: 'Отрисовка FOV',
+        draw_fov_sub: 'Отобразить зону прицеливания (FOV) как белый круг на экране',
+        rgb_draw_fov: 'RGB FOV', rgb_draw_fov_sub: 'Отрисовка круга FOV с радужным RGB-циклом цветов',
+        fov_thickness: 'Толщина линии FOV',
+        draw_crosshair: 'Отрисовка прицела', ch_type_label: 'Тип прицела',
+        ch_type_off: 'Выкл', ch_type_dot: 'Точка', ch_type_cross: 'Крест (+)', ch_type_circle_cross: 'Круг + Крест',
+        rgb_crosshair: 'RGB Прицел', rgb_crosshair_sub: 'Отрисовка прицела с радужным RGB-циклом цветов',
+        ov_ch_size: 'Размер', ov_ch_thickness: 'Толщина', ov_ch_gap: 'Отступ',
+        ch_color_hint: 'Цвет прицела (когда RGB выкл):'
       },
       ja: {
         modules: 'モジュール', system: 'システム', aimbot: 'エイムボット', triggerbot: 'トリガーボット',
@@ -2392,6 +2606,15 @@
         auto_detect: '自動検出', fov_preview: 'FOVプレビュー', status: 'ステータス', active: 'アクティブ', inactive: '非アクティブ',
         reset: 'リセット', save: '保存', saved: '設定を保存しました',
         c_red: '赤', c_orange: 'オレンジ', c_yellow: '黄', c_green: '緑', c_cyan: 'シアン', c_blue: '青', c_purple: '紫', c_white: '白',
+        overlay: 'オーバーレイ', draw_fov_title: 'FOV描画', draw_fov: 'FOV描画',
+        draw_fov_sub: '照準範囲(FOV)を白い円で画面に描画',
+        rgb_draw_fov: 'RGB FOV描画', rgb_draw_fov_sub: 'FOV円をレインボーRGB色循環で描画',
+        fov_thickness: 'FOV線の太さ',
+        draw_crosshair: '照準描画', ch_type_label: '照準タイプ',
+        ch_type_off: 'オフ', ch_type_dot: '点', ch_type_cross: '十字 (+)', ch_type_circle_cross: '円 + 十字',
+        rgb_crosshair: 'RGB照準', rgb_crosshair_sub: '照準をレインボーRGB色循環で描画',
+        ov_ch_size: 'サイズ', ov_ch_thickness: '太さ', ov_ch_gap: '間隔',
+        ch_color_hint: '照準色 (RGBオフ時):'
       },
       zh: {
         modules: '模块', system: '系统', aimbot: '自瞄', triggerbot: '自动开火',
@@ -2419,6 +2642,15 @@
         auto_detect: '自动检测', fov_preview: '范围预览', status: '状态', active: '激活', inactive: '未激活',
         reset: '重置', save: '保存', saved: '设置已保存',
         c_red: '红色', c_orange: '橙色', c_yellow: '黄色', c_green: '绿色', c_cyan: '青色', c_blue: '蓝色', c_purple: '紫色', c_white: '白色',
+        overlay: '覆盖层', draw_fov_title: '绘制FOV', draw_fov: '绘制FOV',
+        draw_fov_sub: '在屏幕上以白色圆圈绘制瞄准范围(FOV)',
+        rgb_draw_fov: 'RGB FOV', rgb_draw_fov_sub: '以彩虹RGB颜色循环绘制FOV圆',
+        fov_thickness: 'FOV线条粗细',
+        draw_crosshair: '绘制准星', ch_type_label: '准星类型',
+        ch_type_off: '关闭', ch_type_dot: '点', ch_type_cross: '十字 (+)', ch_type_circle_cross: '圆圈 + 十字',
+        rgb_crosshair: 'RGB准星', rgb_crosshair_sub: '以彩虹RGB颜色循环绘制准星',
+        ov_ch_size: '尺寸', ov_ch_thickness: '粗细', ov_ch_gap: '间距',
+        ch_color_hint: '准星颜色 (RGB关闭时):'
       },
       ko: {
         modules: '모듈', system: '시스템', aimbot: '에임봇', triggerbot: '트리거봇',
@@ -2446,6 +2678,15 @@
         auto_detect: '자동 감지', fov_preview: 'FOV 미리보기', status: '상태', active: '활성', inactive: '비활성',
         reset: '초기화', save: '저장', saved: '설정이 저장되었습니다',
         c_red: '빨간색', c_orange: '주황색', c_yellow: '노란색', c_green: '초록색', c_cyan: '시안색', c_blue: '파란색', c_purple: '보라색', c_white: '하얀색',
+        overlay: '오버레이', draw_fov_title: 'FOV 그리기', draw_fov: 'FOV 그리기',
+        draw_fov_sub: '조준 범위(FOV)를 흰색 원으로 화면에 그리기',
+        rgb_draw_fov: 'RGB FOV', rgb_draw_fov_sub: 'FOV 원을 무지개 RGB 색상 순환으로 그리기',
+        fov_thickness: 'FOV 선 두께',
+        draw_crosshair: '크로스헤어 그리기', ch_type_label: '크로스헤어 유형',
+        ch_type_off: '끄기', ch_type_dot: '점', ch_type_cross: '십자 (+)', ch_type_circle_cross: '원 + 십자',
+        rgb_crosshair: 'RGB 크로스헤어', rgb_crosshair_sub: '크로스헤어를 무지개 RGB 색상 순환으로 그리기',
+        ov_ch_size: '크기', ov_ch_thickness: '두께', ov_ch_gap: '간격',
+        ch_color_hint: '크로스헤어 색상 (RGB 끄기 시):'
       },
       ar: {
         modules: 'الوحدات', system: 'النظام', aimbot: 'ايمبوت', triggerbot: 'تريجربوت',
@@ -2473,6 +2714,15 @@
         auto_detect: 'كشف تلقائي', fov_preview: 'معاينة مجال الرؤية', status: 'الحالة', active: 'نشط', inactive: 'غير نشط',
         reset: 'إعادة ضبط', save: 'حفظ', saved: 'تم حفظ الإعدادات',
         c_red: 'أحمر', c_orange: 'برتقالي', c_yellow: 'أصفر', c_green: 'أخضر', c_cyan: 'سماوي', c_blue: 'أزرق', c_purple: 'أرجواني', c_white: 'أبيض',
+        overlay: 'طبقة عرض', draw_fov_title: 'رسم FOV', draw_fov: 'رسم FOV',
+        draw_fov_sub: 'رسم منطقة التصويب (FOV) كدائرة بيضاء على الشاشة',
+        rgb_draw_fov: 'RGB FOV', rgb_draw_fov_sub: 'رسم دائرة FOV بدورة ألوان قوس قزح RGB',
+        fov_thickness: 'سمك خط FOV',
+        draw_crosshair: 'رسم التقاطع', ch_type_label: 'نوع التقاطع',
+        ch_type_off: 'إيقاف', ch_type_dot: 'نقطة', ch_type_cross: 'علامة زائد (+)', ch_type_circle_cross: 'دائرة + علامة زائد',
+        rgb_crosshair: 'RGB التقاطع', rgb_crosshair_sub: 'رسم التقاطع بدورة ألوان قوس قزح RGB',
+        ov_ch_size: 'الحجم', ov_ch_thickness: 'السمك', ov_ch_gap: 'المسافة',
+        ch_color_hint: 'لون التقاطع (عند إيقاف RGB):'
       },
       vi: {
         modules: 'Mô-đun', system: 'Hệ thống', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2500,6 +2750,15 @@
         auto_detect: 'Tự động phát hiện', fov_preview: 'Xem trước FOV', status: 'Trạng thái', active: 'Kích hoạt', inactive: 'Vô hiệu',
         reset: 'Đặt lại', save: 'Lưu', saved: 'Đã lưu cài đặt',
         c_red: 'Đỏ', c_orange: 'Cam', c_yellow: 'Vàng', c_green: 'Xanh lá', c_cyan: 'Xanh lơ', c_blue: 'Xanh dương', c_purple: 'Tím', c_white: 'Trắng',
+        overlay: 'Overlay', draw_fov_title: 'Vẽ FOV', draw_fov: 'Vẽ FOV',
+        draw_fov_sub: 'Vẽ vùng ngắm (FOV) dưới dạng vòng tròn trắng trên màn hình',
+        rgb_draw_fov: 'RGB FOV', rgb_draw_fov_sub: 'Vẽ vòng FOV với chu kỳ màu cầu vồng RGB',
+        fov_thickness: 'Độ dày đường FOV',
+        draw_crosshair: 'Vẽ tâm ngắm', ch_type_label: 'Loại tâm ngắm',
+        ch_type_off: 'Tắt', ch_type_dot: 'Chấm', ch_type_cross: 'Chữ thập (+)', ch_type_circle_cross: 'Vòng tròn + Chữ thập',
+        rgb_crosshair: 'RGB tâm ngắm', rgb_crosshair_sub: 'Vẽ tâm ngắm với chu kỳ màu cầu vồng RGB',
+        ov_ch_size: 'Kích thước', ov_ch_thickness: 'Độ dày', ov_ch_gap: 'Khoảng cách',
+        ch_color_hint: 'Màu tâm ngắm (khi RGB tắt):'
       },
       pl: {
         modules: 'Moduły', system: 'System', aimbot: 'Aimbot', triggerbot: 'Triggerbot',
@@ -2527,6 +2786,15 @@
         auto_detect: 'Auto Wykrywanie', fov_preview: 'Podgląd FOV', status: 'Status', active: 'Aktywny', inactive: 'Nieaktywny',
         reset: 'Resetuj', save: 'Zapisz', saved: 'Ustawienia zapisane',
         c_red: 'Czerwony', c_orange: 'Pomarańczowy', c_yellow: 'Żółty', c_green: 'Zielony', c_cyan: 'Cyjan', c_blue: 'Niebieski', c_purple: 'Fioletowy', c_white: 'Biały',
+        overlay: 'Nakładka', draw_fov_title: 'Rysuj FOV', draw_fov: 'Rysuj FOV',
+        draw_fov_sub: 'Rysuj obszar celowania (FOV) jako biały okrąg na ekranie',
+        rgb_draw_fov: 'RGB FOV', rgb_draw_fov_sub: 'Rysuj okrąg FOV z cyklem kolorów tęczy RGB',
+        fov_thickness: 'Grubość linii FOV',
+        draw_crosshair: 'Rysuj celownik', ch_type_label: 'Typ celownika',
+        ch_type_off: 'Wyłączony', ch_type_dot: 'Kropka', ch_type_cross: 'Krzyżyk (+)', ch_type_circle_cross: 'Koło + Krzyżyk',
+        rgb_crosshair: 'RGB Celownik', rgb_crosshair_sub: 'Rysuj celownik z cyklem kolorów tęczy RGB',
+        ov_ch_size: 'Rozmiar', ov_ch_thickness: 'Grubość', ov_ch_gap: 'Odstęp',
+        ch_color_hint: 'Kolor celownika (gdy RGB wyłączony):'
       }
     };
 
@@ -2877,9 +3145,18 @@
     }
     function saveToast() { showToast('✓ ' + T('save'), T('saved')); }
 
+    function updateChColorPreview() {
+      const r = parseInt(document.getElementById('ch-color-r')?.value) || 0;
+      const g = parseInt(document.getElementById('ch-color-g')?.value) || 0;
+      const b = parseInt(document.getElementById('ch-color-b')?.value) || 0;
+      const preview = document.getElementById('ch-color-preview');
+      if (preview) preview.style.background = `rgb(${r},${g},${b})`;
+    }
+
     async function handleSave() {
       saveToast();
       try {
+        await updateBackend();
         await fetch('/api/save', { method: 'POST' });
       } catch (e) {
         console.error("Failed to call save API:", e);
@@ -2925,6 +3202,8 @@
         // Checkboxes
         const aimEn = document.getElementById('aim-en'); if (aimEn) { aimEn.checked = data.aimbot_enabled; sv('stat-aim', ''); }
         const drawFovEn = document.getElementById('draw-fov'); if (drawFovEn) drawFovEn.checked = data.draw_fov;
+        const drawFovRgb = document.getElementById('draw-fov-rgb'); if (drawFovRgb) drawFovRgb.checked = data.draw_fov_rgb;
+        const chRgb = document.getElementById('ch-rgb'); if (chRgb) chRgb.checked = data.crosshair_rgb;
         const trigEn = document.getElementById('trig-en'); if (trigEn) trigEn.checked = data.triggerbot_enabled;
         const silentEn = document.getElementById('silent-en'); if (silentEn) silentEn.checked = data.silent_enabled;
         const rcsEn = document.getElementById('rcs-en'); if (rcsEn) rcsEn.checked = !!data.recoil_enabled;
@@ -2961,6 +3240,23 @@
         setSlider('v-td', 'stat-trig-dl', data.triggerbot_delay, v => v + 'ms');
         setSlider('v-tr', 'stat-trig-tr', data.triggerbot_random_delay, v => '±' + v + 'ms');
         setSlider('v-ts', '', data.triggerbot_sens, null);
+
+        // Overlay settings
+        setSlider('v-fov-thick', '', data.draw_fov_thickness, v => v);
+        setSlider('v-ch-size', '', data.crosshair_size, v => v);
+        setSlider('v-ch-thick', '', data.crosshair_thickness, v => v);
+        setSlider('v-ch-gap', '', data.crosshair_gap, v => v);
+
+        const chTypeEl = document.getElementById('ch-type-select');
+        if (chTypeEl && data.crosshair_type !== undefined) chTypeEl.value = data.crosshair_type;
+
+        const chR = document.getElementById('ch-color-r');
+        const chG = document.getElementById('ch-color-g');
+        const chB = document.getElementById('ch-color-b');
+        if (chR && data.crosshair_color_r !== undefined) chR.value = data.crosshair_color_r;
+        if (chG && data.crosshair_color_g !== undefined) chG.value = data.crosshair_color_g;
+        if (chB && data.crosshair_color_b !== undefined) chB.value = data.crosshair_color_b;
+        if (typeof updateChColorPreview === 'function') updateChColorPreview();
 
         if (data.bone) {
           const bsel = document.getElementById('bone-select');
@@ -3007,6 +3303,16 @@
       const payload = {
         aimbot_enabled: document.getElementById('aim-en')?.checked || false,
         draw_fov: document.getElementById('draw-fov')?.checked || false,
+        draw_fov_rgb: document.getElementById('draw-fov-rgb')?.checked || false,
+        draw_fov_thickness: parseInt(document.getElementById('fov-thick-input')?.value) || 2,
+        crosshair_type: parseInt(document.getElementById('ch-type-select')?.value) || 0,
+        crosshair_size: parseInt(document.getElementById('ch-size-input')?.value) || 6,
+        crosshair_thickness: parseInt(document.getElementById('ch-thick-input')?.value) || 2,
+        crosshair_gap: parseInt(document.getElementById('ch-gap-input')?.value) || 3,
+        crosshair_color_r: parseInt(document.getElementById('ch-color-r')?.value) || 0,
+        crosshair_color_g: parseInt(document.getElementById('ch-color-g')?.value) || 255,
+        crosshair_color_b: parseInt(document.getElementById('ch-color-b')?.value) || 0,
+        crosshair_rgb: document.getElementById('ch-rgb')?.checked || false,
         triggerbot_enabled: document.getElementById('trig-en')?.checked || false,
         silent_enabled: document.getElementById('silent-en')?.checked || false,
         recoil_enabled: document.getElementById('rcs-en')?.checked || false,
