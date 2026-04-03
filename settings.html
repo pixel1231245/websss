@@ -1870,7 +1870,7 @@
                 <span class="sl-num" id="v-fov-thick">2</span>
               </div>
               <input type="range" min="1" max="6" value="2" id="fov-thick-input"
-                oninput="sv('v-fov-thick',this.value);updateFill(this);showToast('FOV Thickness','→ '+this.value)">
+                oninput="sv('v-fov-thick',this.value);updateFill(this);showToast('FOV Thickness','→ '+this.value);updateBackend()">
             </div>
           </div>
         </div>
@@ -1887,7 +1887,7 @@
           <div class="section-body">
             <div class="fg">
               <label class="fg-lbl" data-i18n="ch_type_label">Crosshair Tipi</label>
-              <select id="ch-type-select" onchange="showToast('Crosshair','→ '+this.options[this.selectedIndex].text)">
+              <select id="ch-type-select" onchange="showToast('Crosshair','→ '+this.options[this.selectedIndex].text);updateBackend()">
                 <option value="0" data-i18n="ch_type_off">Kapalı</option>
                 <option value="1" data-i18n="ch_type_dot">Nokta (Dot)</option>
                 <option value="2" data-i18n="ch_type_cross">Artı (Cross)</option>
@@ -1909,7 +1909,7 @@
                 <span class="sl-num" id="v-ch-size">6</span>
               </div>
               <input type="range" min="1" max="30" value="6" id="ch-size-input"
-                oninput="sv('v-ch-size',this.value);updateFill(this);showToast('Crosshair Size','→ '+this.value+'px')">
+                oninput="sv('v-ch-size',this.value);updateFill(this);showToast('Crosshair Size','→ '+this.value+'px');updateBackend()">
             </div>
             <div class="sl-group">
               <div class="sl-top">
@@ -1917,7 +1917,7 @@
                 <span class="sl-num" id="v-ch-thick">2</span>
               </div>
               <input type="range" min="1" max="6" value="2" id="ch-thick-input"
-                oninput="sv('v-ch-thick',this.value);updateFill(this);showToast('Crosshair Thickness','→ '+this.value)">
+                oninput="sv('v-ch-thick',this.value);updateFill(this);showToast('Crosshair Thickness','→ '+this.value);updateBackend()">
             </div>
             <div class="sl-group">
               <div class="sl-top">
@@ -1925,7 +1925,7 @@
                 <span class="sl-num" id="v-ch-gap">3</span>
               </div>
               <input type="range" min="0" max="20" value="3" id="ch-gap-input"
-                oninput="sv('v-ch-gap',this.value);updateFill(this);showToast('Crosshair Gap','→ '+this.value+'px')">
+                oninput="sv('v-ch-gap',this.value);updateFill(this);showToast('Crosshair Gap','→ '+this.value+'px');updateBackend()">
             </div>
             <div class="hint" id="ch-color-section">
               <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
@@ -1939,19 +1939,19 @@
                 <label style="font-size:11px;color:var(--muted);font-weight:600;">R</label>
                 <input type="number" id="ch-color-r" min="0" max="255" value="0"
                   style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
-                  oninput="updateChColorPreview()">
+                  oninput="updateChColorPreview();updateBackend()">
               </div>
               <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
                 <label style="font-size:11px;color:var(--muted);font-weight:600;">G</label>
                 <input type="number" id="ch-color-g" min="0" max="255" value="255"
                   style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
-                  oninput="updateChColorPreview()">
+                  oninput="updateChColorPreview();updateBackend()">
               </div>
               <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
                 <label style="font-size:11px;color:var(--muted);font-weight:600;">B</label>
                 <input type="number" id="ch-color-b" min="0" max="255" value="0"
                   style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
-                  oninput="updateChColorPreview()">
+                  oninput="updateChColorPreview();updateBackend()">
               </div>
               <div id="ch-color-preview"
                 style="width:42px;height:42px;min-width:42px;border-radius:8px;border:2px solid var(--border2);background:rgb(0,255,0);">
