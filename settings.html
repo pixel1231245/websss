@@ -1670,15 +1670,6 @@
                 oninput="sv('v-human-str',this.value);updateFill(this);showToast('Humanizer','→ '+this.value)">
             </div>
 
-            <div class="sl-group">
-              <div class="sl-top">
-                <span class="sl-lbl" data-i18n="deadzone">Deadzone (px)</span>
-                <span class="sl-num" id="v-deadzone">3</span>
-              </div>
-              <input type="range" min="0" max="15" value="3" id="deadzone-input"
-                oninput="sv('v-deadzone',this.value);updateFill(this);showToast('Deadzone','→ '+this.value+'px')">
-            </div>
-
             <div class="trow">
               <div class="trow-info">
                 <div class="trow-name">Recoil Kontrol (RCS)</div>
@@ -2393,7 +2384,6 @@
         silent_delay_label: 'At\u0131\u015f Aras\u0131 Gecikme (ms)', silent_delay_sub: '\u0130ki at\u0131\u015f aras\u0131 minimum bekleme',
         silent_key_label: 'Silent Aim Tu\u015fu',
         humanizer: 'Humanizer', humanizer_sub: 'Aim hareketine doğal titreşim ekler', humanizer_str: 'Humanizer Gücü',
-        deadzone: 'Deadzone (px)',
         sensitivity: 'Oyun \u0130\u00e7i Hassasiyet',
         overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
         draw_fov_sub: 'Ekranda nişan alma alanını (FOV) beyaz çember olarak çiz',
@@ -2440,7 +2430,6 @@
         silent_delay_label: 'Shot Delay (ms)', silent_delay_sub: 'Minimum wait between shots',
         silent_key_label: 'Silent Aim Key',
         humanizer: 'Humanizer', humanizer_sub: 'Adds natural micro-tremor to aim movement', humanizer_str: 'Humanizer Strength',
-        deadzone: 'Deadzone (px)',
         sensitivity: 'In-game Sensitivity',
         overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
         draw_fov_sub: 'Draw the aiming area (FOV) as a white circle on screen',
@@ -3364,7 +3353,6 @@
 
         // Humanizer slider
         setSlider('v-human-str', '', data.humanizer_strength, v => v);
-        setSlider('v-deadzone', '', data.deadzone, v => v);
 
         // Overlay settings
         setSlider('v-fov-thick', '', data.draw_fov_thickness, v => v);
@@ -3483,7 +3471,6 @@
         recoil_delay: getNum('v-rcs-dl'),
         humanizer_enabled: document.getElementById('human-en')?.checked || false,
         humanizer_strength: parseInt(document.getElementById('human-str-input')?.value) || 3,
-        deadzone: parseInt(document.getElementById('deadzone-input')?.value) || 3,
         color_mode: colorModeValue
       };
 
@@ -3560,7 +3547,6 @@
         op: document.getElementById('obs-en')?.checked,
         he: document.getElementById('human-en')?.checked,
         hs: parseInt(document.getElementById('human-str-input')?.value) || 3,
-        dz: parseInt(document.getElementById('deadzone-input')?.value) || 3
       };
 
       const blob = scramble(JSON.stringify(config));
@@ -3687,7 +3673,6 @@
         applyCheck('obs-en', config.op);
         applyCheck('human-en', config.he);
         applySlider('input[oninput*="v-human-str"]', config.hs || 3, 'v-human-str');
-        applySlider('input[oninput*="v-deadzone"]', config.dz || 3, 'v-deadzone');
 
         // Force visual refreshes
         drawFov(config.f || 100);
