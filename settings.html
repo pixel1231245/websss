@@ -1678,6 +1678,24 @@
               <input type="range" min="0" max="100" value="5" id="rcs-dl-input"
                 oninput="sv('v-rcs-dl',this.value);updateFill(this);showToast('RCS Delay','→ '+this.value)">
             </div>
+
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl" data-i18n="rcs_start">Başlangıç Kurşunu</span>
+                <span class="sl-num" id="v-rcs-sb">4</span>
+              </div>
+              <input type="range" min="1" max="10" value="4" id="rcs-sb-input"
+                oninput="sv('v-rcs-sb',this.value);updateFill(this);showToast('Start Bullet','→ '+this.value)">
+            </div>
+
+            <div class="sl-group">
+              <div class="sl-top">
+                <span class="sl-lbl" data-i18n="rcs_max">Max Kurşun</span>
+                <span class="sl-num" id="v-rcs-mb">25</span>
+              </div>
+              <input type="range" min="5" max="30" value="25" id="rcs-mb-input"
+                oninput="sv('v-rcs-mb',this.value);updateFill(this);showToast('Max Bullets','→ '+this.value)">
+            </div>
           </div>
         </div>
 
@@ -3322,6 +3340,14 @@
         // RCS Sync
         setSlider('v-rcs-sp', '', data.recoil_speed, v => v);
         setSlider('v-rcs-dl', '', data.recoil_delay, v => v);
+        if (data.recoil_start_bullet !== undefined) {
+          const sb = document.getElementById('rcs-sb-input');
+          if (sb) { sb.value = data.recoil_start_bullet; sv('v-rcs-sb', data.recoil_start_bullet); updateFill(sb); }
+        }
+        if (data.recoil_max_bullets !== undefined) {
+          const mb = document.getElementById('rcs-mb-input');
+          if (mb) { mb.value = data.recoil_max_bullets; sv('v-rcs-mb', data.recoil_max_bullets); updateFill(mb); }
+        }
 
         setSlider('v-trig-x', 'stat-trig-x', data.triggerbot_fovX, v => v + 'px');
         setSlider('v-trig-y', 'stat-trig-y', data.triggerbot_fovY, v => v + 'px');
@@ -3444,6 +3470,8 @@
         magnet_key: getVK(document.getElementById('ak-magnet')?.textContent),
         recoil_speed: getNum('v-rcs-sp'),
         recoil_delay: getNum('v-rcs-dl'),
+        recoil_start_bullet: getNum('v-rcs-sb'),
+        recoil_max_bullets: getNum('v-rcs-mb'),
         color_mode: colorModeValue
       };
 
