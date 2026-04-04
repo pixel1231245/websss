@@ -1504,6 +1504,16 @@
         <span class="nav-lbl" data-i18n="magnet_trigger">Magnet</span>
         <span class="nav-tip" data-i18n="magnet_trigger">Magnet</span>
       </div>
+      <div class="nav-item" onclick="goPage('bhop',this)">
+        <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
+          <path d="M5 20c2.5-3.5 4-8 4-12"/>
+          <path d="M12 20c0-5 1.5-9 4-12"/>
+          <circle cx="9" cy="6" r="2"/>
+          <circle cx="16" cy="6" r="2"/>
+        </svg>
+        <span class="nav-lbl" data-i18n="bhop">BunnyHop</span>
+        <span class="nav-tip" data-i18n="bhop">BunnyHop</span>
+      </div>
       <div class="nav-item" onclick="goPage('overlay',this)">
         <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
           <rect x="3" y="3" width="18" height="18" rx="2"/>
@@ -1832,6 +1842,70 @@
         </div>
       </div>
 
+
+      <!-- ══ BHOP ══ -->
+      <div class="scroll-area page" id="page-bhop">
+        <div class="section">
+          <div class="section-head">
+            <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
+              <path d="M5 20c2.5-3.5 4-8 4-12"/>
+              <path d="M12 20c0-5 1.5-9 4-12"/>
+              <circle cx="9" cy="6" r="2"/>
+              <circle cx="16" cy="6" r="2"/>
+            </svg>
+            <span class="sh-title" data-i18n="bhop">BunnyHop</span>
+          </div>
+          <div class="section-body">
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="enable_bhop">BunnyHop'u Etkinle&#351;tir</div>
+                <div class="trow-sub" data-i18n="enable_bhop_sub">GHUB driver ile scroll wheel bhop</div>
+              </div>
+              <label class="tog"><input type="checkbox" id="bhop-en" onchange="onTog('BHop','Enable',this.checked)">
+                <div class="ttr"></div>
+              </label>
+            </div>
+            <div class="hint">
+              <svg viewBox="0 0 24 24" stroke-width="1.6">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span data-i18n="bhop_hint">Valorant'ta Jump'i Mouse Wheel Down'a bindleyin. Tu&#351;a bas&#305;l&#305; tutunca otomatik z&#305;plar.</span>
+            </div>
+
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="bhop_min">Min Gecikme (ms)</div>
+                <div class="trow-sub" data-i18n="bhop_min_sub">Scroll'lar aras&#305; minimum bekleme</div>
+              </div>
+              <div class="slider-wrap">
+                <input type="range" id="bhop-min" min="10" max="60" value="18"
+                  oninput="this.nextElementSibling.textContent=this.value">
+                <span class="slider-val">18</span>
+              </div>
+            </div>
+
+            <div class="trow">
+              <div class="trow-info">
+                <div class="trow-name" data-i18n="bhop_max">Max Gecikme (ms)</div>
+                <div class="trow-sub" data-i18n="bhop_max_sub">Scroll'lar aras&#305; maksimum bekleme</div>
+              </div>
+              <div class="slider-wrap">
+                <input type="range" id="bhop-max" min="15" max="80" value="35"
+                  oninput="this.nextElementSibling.textContent=this.value">
+                <span class="slider-val">35</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn btn-ghost" data-i18n="reset">S&#305;f&#305;rla</button>
+          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
+        </div>
+      </div>
 
       <!-- ══ OVERLAY ══ -->
       <div class="scroll-area page" id="page-overlay">
@@ -2279,7 +2353,11 @@
         c_astra: 'Anti-Astra', color_profile: 'Renk Profili',
         magnet_trigger: 'Magnet', enable_magnet: "Magnet'ı Etkinleştir", enable_magnet_sub: "Aimbot ve Trigger'ı aynı tuşta birleştirir",
         magnet_hint: 'Bu mod aktifken seçili tuşa bastığınızda hem nişan alır hem ateş eder (Key Hold).', magnet_key: 'Magnet Tuşu',
-        sensitivity: 'Oyun İçi Hassasiyet',
+        bhop: 'BunnyHop', enable_bhop: "BunnyHop'u Etkinle\u015ftir", enable_bhop_sub: 'GHUB driver ile scroll wheel bhop',
+        bhop_hint: "Valorant'ta Jump'\u0131 Mouse Wheel Down'a bindleyin. Tu\u015fa bas\u0131l\u0131 tutunca otomatik z\u0131plar.",
+        bhop_min: 'Min Gecikme (ms)', bhop_min_sub: 'Scroll\'lar aras\u0131 minimum bekleme',
+        bhop_max: 'Max Gecikme (ms)', bhop_max_sub: 'Scroll\'lar aras\u0131 maksimum bekleme',
+        sensitivity: 'Oyun \u0130\u00e7i Hassasiyet',
         overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
         draw_fov_sub: 'Ekranda nişan alma alanını (FOV) beyaz çember olarak çiz',
         rgb_draw_fov: 'RGB Draw FOV', rgb_draw_fov_sub: 'FOV çemberini rainbow RGB renk döngüsüyle çiz',
@@ -2319,6 +2397,10 @@
         c_astra: 'Anti-Astra', color_profile: 'Color Profile',
         magnet_trigger: 'Magnet', enable_magnet: 'Enable Magnet', enable_magnet_sub: 'Combines Aimbot and Trigger on one key',
         magnet_hint: 'When active, holding the selected key will both aim and shoot.', magnet_key: 'Magnet Key',
+        bhop: 'BunnyHop', enable_bhop: 'Enable BunnyHop', enable_bhop_sub: 'Scroll wheel bhop via GHUB driver',
+        bhop_hint: 'Bind Jump to Mouse Wheel Down in Valorant. Hold key to auto-jump.',
+        bhop_min: 'Min Delay (ms)', bhop_min_sub: 'Minimum wait between scrolls',
+        bhop_max: 'Max Delay (ms)', bhop_max_sub: 'Maximum wait between scrolls',
         sensitivity: 'In-game Sensitivity',
         overlay: 'Overlay', draw_fov_title: 'Draw FOV', draw_fov: 'Draw FOV',
         draw_fov_sub: 'Draw the aiming area (FOV) as a white circle on screen',
@@ -2814,7 +2896,7 @@
 
         const bcEl = document.getElementById('bc-page');
         if (bcEl && typeof curPageId !== 'undefined') {
-          const key = curPageId === 'game' ? 'game_settings' : (curPageId === 'magnet' ? 'magnet_trigger' : (curPageId === 'settings' ? 'settings' : curPageId));
+          const key = curPageId === 'game' ? 'game_settings' : (curPageId === 'magnet' ? 'magnet_trigger' : (curPageId === 'bhop' ? 'bhop' : (curPageId === 'settings' ? 'settings' : curPageId)));
           bcEl.textContent = T(key);
         }
 
@@ -3211,6 +3293,7 @@
         const flickerEn = document.getElementById('flick-en'); if (flickerEn) flickerEn.checked = data.flicker_enabled;
         const sclEn = document.getElementById('scl-en'); if (sclEn) sclEn.checked = data.screen_capture_log_enabled;
         const obsEn = document.getElementById('obs-en'); if (obsEn) obsEn.checked = data.stream_proof;
+        const bhopEn = document.getElementById('bhop-en'); if (bhopEn) bhopEn.checked = !!data.bhop_enabled;
 
         // Sliders Helper
         const setSlider = (idValue, idText, val, format) => {
@@ -3280,6 +3363,16 @@
           if (keyBtnMag) keyBtnMag.textContent = REVERSE_VK[data.magnet_key] || String.fromCharCode(data.magnet_key);
         }
 
+        // BHop sliders
+        if (data.bhop_min_delay !== undefined) {
+          const s = document.getElementById('bhop-min');
+          if (s) { s.value = data.bhop_min_delay; s.nextElementSibling.textContent = data.bhop_min_delay; }
+        }
+        if (data.bhop_max_delay !== undefined) {
+          const s = document.getElementById('bhop-max');
+          if (s) { s.value = data.bhop_max_delay; s.nextElementSibling.textContent = data.bhop_max_delay; }
+        }
+
         // Initialize color
         if (data.color_mode !== undefined) {
           colorModeValue = data.color_mode;
@@ -3338,6 +3431,9 @@
         triggerbot_key: getVK(document.getElementById('ak-trig')?.textContent),
         magnet_enabled: document.getElementById('magnet-en')?.checked || false,
         magnet_key: getVK(document.getElementById('ak-magnet')?.textContent),
+        bhop_enabled: document.getElementById('bhop-en')?.checked || false,
+        bhop_min_delay: parseInt(document.getElementById('bhop-min')?.value) || 18,
+        bhop_max_delay: parseInt(document.getElementById('bhop-max')?.value) || 35,
         recoil_speed: getNum('v-rcs-sp'),
         recoil_delay: getNum('v-rcs-dl'),
         color_mode: colorModeValue
@@ -3408,6 +3504,9 @@
         tk: document.getElementById('ak-trig')?.textContent || 'MOUSE5',
         me: document.getElementById('magnet-en')?.checked,
         mk: document.getElementById('ak-magnet')?.textContent || 'MOUSE4',
+        bh: document.getElementById('bhop-en')?.checked,
+        bhmn: parseInt(document.getElementById('bhop-min')?.value) || 18,
+        bhmx: parseInt(document.getElementById('bhop-max')?.value) || 35,
         c: colorModeValue,
         d: parseInt(document.querySelector('input[oninput*="v-dist"]')?.value) || 1,
         hc: document.getElementById('cmd-tog')?.checked,
@@ -3517,6 +3616,16 @@
 
         applyCheck('magnet-en', config.me);
         if (config.mk) document.getElementById('ak-magnet').textContent = config.mk;
+
+        applyCheck('bhop-en', config.bh);
+        if (config.bhmn !== undefined) {
+          const s1 = document.getElementById('bhop-min');
+          if (s1) { s1.value = config.bhmn; s1.nextElementSibling.textContent = config.bhmn; }
+        }
+        if (config.bhmx !== undefined) {
+          const s2 = document.getElementById('bhop-max');
+          if (s2) { s2.value = config.bhmx; s2.nextElementSibling.textContent = config.bhmx; }
+        }
 
         if (config.c !== undefined) {
           colorModeValue = config.c;
