@@ -1471,7 +1471,7 @@
       <div class="sb-logo">PA</div>
       <div class="sb-txt">
         <div class="sb-name">PIXEL AIM</div>
-        <div class="sb-ver">v4.0 — Pro</div>
+        <div class="sb-ver">v3.1 — Pro</div>
       </div>
     </div>
     <nav class="sb-nav">
@@ -1512,16 +1512,7 @@
         <span class="nav-lbl" data-i18n="silent_aim">Silent Aim</span>
         <span class="nav-tip" data-i18n="silent_aim">Silent Aim</span>
       </div>
-      <div class="nav-item" onclick="goPage('overlay',this)">
-        <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
-          <rect x="3" y="3" width="18" height="18" rx="2"/>
-          <line x1="12" y1="6" x2="12" y2="18"/>
-          <line x1="6" y1="12" x2="18" y2="12"/>
-          <circle cx="12" cy="12" r="4"/>
-        </svg>
-        <span class="nav-lbl" data-i18n="overlay">Overlay</span>
-        <span class="nav-tip" data-i18n="overlay">Overlay</span>
-      </div>
+      <!-- Overlay kaldırıldı — vgm.exe tespit riski -->
       <div class="sb-div"></div>
       <div class="sb-sec" data-i18n="system">Sistem</div>
       <div class="nav-item" onclick="goPage('settings',this)">
@@ -1887,7 +1878,7 @@
                 <line x1="12" y1="16" x2="12" y2="12" />
                 <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
-              <span data-i18n="silent_hint">Tu&#351;a bas&#305;l&#305; tutunca hedefe anl&#305;k flick yap&#305;p ate&#351;ler ve crosshair'i geri getirir. GHUB driver ile &#231;al&#305;&#351;&#305;r.</span>
+              <span data-i18n="silent_hint">Tu&#351;a bas&#305;l&#305; tutunca hedefe anl&#305;k flick yap&#305;p ate&#351;ler ve crosshair'i geri getirir. &#231;al&#305;&#351;&#305;r.</span>
             </div>
 
             <div class="trow">
@@ -1922,138 +1913,7 @@
         </div>
       </div>
 
-      <!-- ══ OVERLAY ══ -->
-      <div class="scroll-area page" id="page-overlay">
-
-        <!-- Draw FOV -->
-        <div class="section">
-          <div class="section-head">
-            <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M2 12h3m14 0h3M12 2v3m0 14v3"/>
-            </svg>
-            <span class="sh-title" data-i18n="draw_fov_title">Draw FOV</span>
-          </div>
-          <div class="section-body">
-            <div class="trow">
-              <div class="trow-info">
-                <div class="trow-name" data-i18n="draw_fov">Draw FOV</div>
-                <div class="trow-sub" data-i18n="draw_fov_sub">Ekranda nişan alma alanını (FOV) beyaz çember olarak çiz</div>
-              </div>
-              <label class="tog"><input type="checkbox" id="draw-fov" onchange="onTog('Overlay','DrawFOV',this.checked)">
-                <div class="ttr"></div>
-              </label>
-            </div>
-            <div class="trow">
-              <div class="trow-info">
-                <div class="trow-name" data-i18n="rgb_draw_fov">RGB Draw FOV</div>
-                <div class="trow-sub" data-i18n="rgb_draw_fov_sub">FOV çemberini rainbow RGB renk döngüsüyle çiz</div>
-              </div>
-              <label class="tog"><input type="checkbox" id="draw-fov-rgb" onchange="onTog('Overlay','RGB FOV',this.checked)">
-                <div class="ttr"></div>
-              </label>
-            </div>
-            <div class="sl-group">
-              <div class="sl-top">
-                <span class="sl-lbl" data-i18n="fov_thickness">FOV Çizgi Kalınlığı</span>
-                <span class="sl-num" id="v-fov-thick">2</span>
-              </div>
-              <input type="range" min="1" max="6" value="2" id="fov-thick-input"
-                oninput="sv('v-fov-thick',this.value);updateFill(this);showToast('FOV Thickness','→ '+this.value);updateBackend()">
-            </div>
-          </div>
-        </div>
-
-        <!-- Draw Crosshair -->
-        <div class="section">
-          <div class="section-head">
-            <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
-              <line x1="12" y1="2" x2="12" y2="22"/>
-              <line x1="2" y1="12" x2="22" y2="12"/>
-            </svg>
-            <span class="sh-title" data-i18n="draw_crosshair">Draw Crosshair</span>
-          </div>
-          <div class="section-body">
-            <div class="fg">
-              <label class="fg-lbl" data-i18n="ch_type_label">Crosshair Tipi</label>
-              <select id="ch-type-select" onchange="showToast('Crosshair','→ '+this.options[this.selectedIndex].text);updateBackend()">
-                <option value="0" data-i18n="ch_type_off">Kapalı</option>
-                <option value="1" data-i18n="ch_type_dot">Nokta (Dot)</option>
-                <option value="2" data-i18n="ch_type_cross">Artı (Cross)</option>
-                <option value="3" data-i18n="ch_type_circle_cross">Daire + Artı</option>
-              </select>
-            </div>
-            <div class="trow">
-              <div class="trow-info">
-                <div class="trow-name" data-i18n="rgb_crosshair">RGB Crosshair</div>
-                <div class="trow-sub" data-i18n="rgb_crosshair_sub">Crosshair'i rainbow RGB renk döngüsüyle çiz</div>
-              </div>
-              <label class="tog"><input type="checkbox" id="ch-rgb" onchange="onTog('Overlay','RGB Crosshair',this.checked)">
-                <div class="ttr"></div>
-              </label>
-            </div>
-            <div class="sl-group">
-              <div class="sl-top">
-                <span class="sl-lbl" data-i18n="ov_ch_size">Boyut (Size)</span>
-                <span class="sl-num" id="v-ch-size">6</span>
-              </div>
-              <input type="range" min="1" max="30" value="6" id="ch-size-input"
-                oninput="sv('v-ch-size',this.value);updateFill(this);showToast('Crosshair Size','→ '+this.value+'px');updateBackend()">
-            </div>
-            <div class="sl-group">
-              <div class="sl-top">
-                <span class="sl-lbl" data-i18n="ov_ch_thickness">Kalınlık (Thickness)</span>
-                <span class="sl-num" id="v-ch-thick">2</span>
-              </div>
-              <input type="range" min="1" max="6" value="2" id="ch-thick-input"
-                oninput="sv('v-ch-thick',this.value);updateFill(this);showToast('Crosshair Thickness','→ '+this.value);updateBackend()">
-            </div>
-            <div class="sl-group">
-              <div class="sl-top">
-                <span class="sl-lbl" data-i18n="ov_ch_gap">Boşluk (Gap)</span>
-                <span class="sl-num" id="v-ch-gap">3</span>
-              </div>
-              <input type="range" min="0" max="20" value="3" id="ch-gap-input"
-                oninput="sv('v-ch-gap',this.value);updateFill(this);showToast('Crosshair Gap','→ '+this.value+'px');updateBackend()">
-            </div>
-            <div class="hint" id="ch-color-section">
-              <svg viewBox="0 0 24 24" stroke-width="1.6" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="5"/>
-                <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
-              </svg>
-              <span data-i18n="ch_color_hint">Crosshair Rengi (RGB kapalıyken):</span>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
-              <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
-                <label style="font-size:11px;color:var(--muted);font-weight:600;">R</label>
-                <input type="number" id="ch-color-r" min="0" max="255" value="0"
-                  style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
-                  oninput="updateChColorPreview();updateBackend()">
-              </div>
-              <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
-                <label style="font-size:11px;color:var(--muted);font-weight:600;">G</label>
-                <input type="number" id="ch-color-g" min="0" max="255" value="255"
-                  style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
-                  oninput="updateChColorPreview();updateBackend()">
-              </div>
-              <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
-                <label style="font-size:11px;color:var(--muted);font-weight:600;">B</label>
-                <input type="number" id="ch-color-b" min="0" max="255" value="0"
-                  style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:13px;outline:none;font-family:'DM Mono',monospace;"
-                  oninput="updateChColorPreview();updateBackend()">
-              </div>
-              <div id="ch-color-preview"
-                style="width:42px;height:42px;min-width:42px;border-radius:8px;border:2px solid var(--border2);background:rgb(0,255,0);">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="save-bar">
-          <button class="btn btn-ghost" data-i18n="reset">Sıfırla</button>
-          <button class="btn btn-primary" onclick="handleSave()" data-i18n="save">Kaydet</button>
-        </div>
-      </div>
+      <!-- Overlay kaldırıldı — vgm.exe tespit riski -->
 
       <!-- ══ SETTINGS ══ -->
       <div class="scroll-area page" id="page-settings">
@@ -2226,19 +2086,11 @@
             <!-- System -->
             <div class="kb-row">
               <div class="kb-info">
-                <div class="kb-name" data-i18n="panel_toggle">Panel Göster/Gizle</div>
-              </div>
-              <div class="kb-right">
-                <div class="kb-btn" onclick="listenKey(this,'Panel Toggle')">INS</div>
-              </div>
-            </div>
-            <div class="kb-row">
-              <div class="kb-info">
                 <div class="kb-name" data-i18n="panic_key">Panic Key</div>
                 <div class="kb-desc" data-i18n="panic_sub">Her şeyi devre dışı bırak</div>
               </div>
               <div class="kb-right">
-                <div class="kb-btn" onclick="listenKey(this,'Panic')">END</div>
+                <div class="kb-btn" id="ak-panic" onclick="listenKey(this,'Panic')">END</div>
               </div>
             </div>
           </div>
@@ -3397,6 +3249,10 @@
           const keyBtnSil = document.getElementById('ak-silent');
           if (keyBtnSil) keyBtnSil.textContent = REVERSE_VK[data.silent_key] || String.fromCharCode(data.silent_key);
         }
+        if (data.panic_key) {
+          const keyBtnPanic = document.getElementById('ak-panic');
+          if (keyBtnPanic) keyBtnPanic.textContent = REVERSE_VK[data.panic_key] || String.fromCharCode(data.panic_key);
+        }
         if (data.silent_fov !== undefined) {
           const s = document.getElementById('silent-fov');
           if (s) { s.value = data.silent_fov; s.nextElementSibling.textContent = data.silent_fov; }
@@ -3467,6 +3323,7 @@
         triggerbot_key: getVK(document.getElementById('ak-trig')?.textContent),
         magnet_enabled: document.getElementById('magnet-en')?.checked || false,
         magnet_key: getVK(document.getElementById('ak-magnet')?.textContent),
+        panic_key: getVK(document.getElementById('ak-panic')?.textContent),
         recoil_speed: getNum('v-rcs-sp'),
         recoil_delay: getNum('v-rcs-dl'),
         humanizer_enabled: document.getElementById('human-en')?.checked || false,
